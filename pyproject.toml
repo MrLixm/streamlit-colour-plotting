@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "streamlit-colour-plotting"
+version = "0.1.0"
+description = "Web-app to plot colors, images, colorspaces in graphs."
+authors = ["Liam Collod <monsieurlixm@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "streamlit_colourplotting" }]
+
+[tool.poetry.dependencies]
+python = ">3.9.7,<3.12"
+streamlit = "^1.25"
+colour-science = { version = "^0.4", extras = ["plotting"] }
+matplotlib = "*"
+
+[tool.poetry.dev-dependencies]
+black = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
