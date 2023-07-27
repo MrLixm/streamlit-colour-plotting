@@ -1,6 +1,8 @@
 import enum
 
 import streamlit
+from cocoon import RgbColorspace
+from cocoon import sRGB_COLORSPACE
 from cocoon.color import RGBAColor
 from cocoon.color import ColorStringFormat
 
@@ -20,6 +22,10 @@ class UserConfig:
             streamlit.session_state["USER_SOURCE_TYPE"] = SourceType.color
         if "USER_SOURCE_COLOR" not in streamlit.session_state:
             streamlit.session_state["USER_SOURCE_COLOR"] = RGBAColor(0.0, 0.0, 0.0)
+        if "USER_SOURCE_COLORSPACE" not in streamlit.session_state:
+            streamlit.session_state["USER_SOURCE_COLORSPACE"] = sRGB_COLORSPACE
+        if "USER_SOURCE_FORCE_LINEAR" not in streamlit.session_state:
+            streamlit.session_state["USER_SOURCE_FORCE_LINEAR"] = False
         if "USER_SOURCE_COLOR_FORMAT" not in streamlit.session_state:
             k = "USER_SOURCE_COLOR_FORMAT"
             streamlit.session_state[k] = ColorStringFormat.float_d4
@@ -50,6 +56,21 @@ class UserConfig:
     def USER_SOURCE_COLOR_FORMAT(self, new_value: ColorStringFormat):
         streamlit.session_state["USER_SOURCE_COLOR_FORMAT"] = new_value
 
+    @property
+    def USER_SOURCE_COLORSPACE(self) -> RgbColorspace:
+        return streamlit.session_state["USER_SOURCE_COLORSPACE"]
+
+    @USER_SOURCE_COLORSPACE.setter
+    def USER_SOURCE_COLORSPACE(self, new_value: RgbColorspace):
+        streamlit.session_state["USER_SOURCE_COLORSPACE"] = new_value
+
+    @property
+    def USER_SOURCE_FORCE_LINEAR(self) -> bool:
+        return streamlit.session_state["USER_SOURCE_FORCE_LINEAR"]
+
+    @USER_SOURCE_FORCE_LINEAR.setter
+    def USER_SOURCE_FORCE_LINEAR(self, new_value: bool):
+        streamlit.session_state["USER_SOURCE_FORCE_LINEAR"] = new_value
 
     @property
     def USER_SOURCE_ERROR(self) -> str:
@@ -58,6 +79,14 @@ class UserConfig:
     @USER_SOURCE_ERROR.setter
     def USER_SOURCE_ERROR(self, new_value: str):
         streamlit.session_state["USER_SOURCE_ERROR"] = new_value
+
+    @property
+    def color(self) -> RGBAColor:
+        colorspace = self.USER_SOURCE_COLORSPACE
+        if self.USER_SOURCE_FORCE_LINEAR:
+            colorspace = colorspace.as_linear_copy()
+        color = self.USER_SOURCE_COLOR.as_colorspace(colorspace)
+        return color
 
 
 def config() -> UserConfig:

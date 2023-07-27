@@ -11,6 +11,7 @@ from cocoon.color import fix_color_str
 
 from streamlit_colourplotting.ui import config
 from streamlit_colourplotting import widgetify
+from ._colorspacepicker import create_colorspace_picker
 
 
 @widgetify
@@ -52,7 +53,7 @@ def create_color_preview():
     """
     Generate a small thumbnail displaying the picked color
     """
-    color = config().USER_SOURCE_COLOR
+    color = config().color
     color = color.as_colorspace(sRGB_COLORSPACE)
     image_array = color.to_array(alpha=False)
     image_array = convert_float_to_int8(image_array)
@@ -64,6 +65,8 @@ def create_color_picker():
     """
     Generate widgets allowing to submit a RGB color value.
     """
+
+    create_colorspace_picker()
 
     if config().USER_SOURCE_ERROR:
         streamlit.warning(config().USER_SOURCE_ERROR)
