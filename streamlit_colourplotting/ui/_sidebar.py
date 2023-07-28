@@ -7,7 +7,7 @@ from streamlit_colourplotting.ui import config
 
 @widgetify
 def widget_source_type(key):
-    config().USER_SOURCE_TYPE = streamlit.session_state[key]
+    config().USER_SOURCE_TYPE = SourceType(streamlit.session_state[key])
 
 
 def create_sidebar():
