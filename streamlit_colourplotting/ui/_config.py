@@ -29,8 +29,10 @@ class UserIssue(enum.IntFlag):
 
 class UserConfig:
     def __init__(self):
+        # note: session_state doesn't work well with Enums
+
         if "USER_SOURCE_TYPE" not in streamlit.session_state:
-            streamlit.session_state["USER_SOURCE_TYPE"] = SourceType.color
+            streamlit.session_state["USER_SOURCE_TYPE"] = SourceType.color.value
         if "USER_SOURCE_COLOR" not in streamlit.session_state:
             streamlit.session_state["USER_SOURCE_COLOR"] = RGBAColor(0.0, 0.0, 0.0)
         if "USER_SOURCE_COLORSPACE" not in streamlit.session_state:
@@ -39,17 +41,17 @@ class UserConfig:
             streamlit.session_state["USER_SOURCE_FORCE_LINEAR"] = False
         if "USER_SOURCE_COLOR_FORMAT" not in streamlit.session_state:
             k = "USER_SOURCE_COLOR_FORMAT"
-            streamlit.session_state[k] = ColorStringFormat.float_d4
+            streamlit.session_state[k] = ColorStringFormat.float_d4.value
         if "USER_SOURCE_ERROR" not in streamlit.session_state:
-            streamlit.session_state["USER_SOURCE_ERROR"] = UserIssue.unset
+            streamlit.session_state["USER_SOURCE_ERROR"] = UserIssue.unset.value
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
-        return streamlit.session_state["USER_SOURCE_TYPE"]
+        return SourceType(streamlit.session_state["USER_SOURCE_TYPE"])
 
     @USER_SOURCE_TYPE.setter
     def USER_SOURCE_TYPE(self, new_value: SourceType):
-        streamlit.session_state["USER_SOURCE_TYPE"] = new_value
+        streamlit.session_state["USER_SOURCE_TYPE"] = new_value.value
 
     @property
     def USER_SOURCE_COLOR(self) -> RGBAColor:
@@ -61,11 +63,11 @@ class UserConfig:
 
     @property
     def USER_SOURCE_COLOR_FORMAT(self) -> ColorStringFormat:
-        return streamlit.session_state["USER_SOURCE_COLOR_FORMAT"]
+        return ColorStringFormat(streamlit.session_state["USER_SOURCE_COLOR_FORMAT"])
 
     @USER_SOURCE_COLOR_FORMAT.setter
     def USER_SOURCE_COLOR_FORMAT(self, new_value: ColorStringFormat):
-        streamlit.session_state["USER_SOURCE_COLOR_FORMAT"] = new_value
+        streamlit.session_state["USER_SOURCE_COLOR_FORMAT"] = new_value.value
 
     @property
     def USER_SOURCE_COLORSPACE(self) -> RgbColorspace:
@@ -85,11 +87,11 @@ class UserConfig:
 
     @property
     def USER_SOURCE_ERROR(self) -> UserIssue:
-        return streamlit.session_state["USER_SOURCE_ERROR"]
+        return UserIssue(streamlit.session_state["USER_SOURCE_ERROR"])
 
     @USER_SOURCE_ERROR.setter
     def USER_SOURCE_ERROR(self, new_value: UserIssue):
-        streamlit.session_state["USER_SOURCE_ERROR"] = new_value
+        streamlit.session_state["USER_SOURCE_ERROR"] = new_value.value
 
     @property
     def color(self) -> RGBAColor:
