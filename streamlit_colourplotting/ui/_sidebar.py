@@ -33,6 +33,15 @@ def widget_show_diagram_background(key, force_update=False):
     config().USER_DIAGRAM_SHOW_BACKGROUND = streamlit.session_state[key]
 
 
+@widgetify
+def widget_rgb_locus(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_RGB_LOCUS
+        return
+
+    config().USER_RGB_LOCUS = streamlit.session_state[key]
+
+
 def create_sidebar():
     streamlit.title("Options".upper())
 
@@ -61,5 +70,11 @@ def create_sidebar():
         label="Show Diagram Background",
         key=str(widget_show_diagram_background),
         on_change=widget_show_diagram_background,
-        help="If enabled the diagram shape will have a colored background.",
+    )
+
+    widget_rgb_locus(force_update=True)
+    streamlit.checkbox(
+        label="Use RGB Spectral Locus",
+        key=str(widget_rgb_locus),
+        on_change=widget_rgb_locus,
     )
