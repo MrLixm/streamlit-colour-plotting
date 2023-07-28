@@ -65,6 +65,8 @@ class UserConfig:
             streamlit.session_state[k] = ColorStringFormat.float_d4.value
         if "USER_SOURCE_ERROR" not in streamlit.session_state:
             streamlit.session_state["USER_SOURCE_ERROR"] = UserIssue.unset.value
+        if "USER_SCATTER_SIZE" not in streamlit.session_state:
+            streamlit.session_state["USER_SCATTER_SIZE"] = 25.0
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
@@ -147,6 +149,14 @@ class UserConfig:
         streamlit.session_state["USER_SOURCE_ERROR"] = new_value.value
 
     @property
+    def USER_SCATTER_SIZE(self) -> float:
+        return streamlit.session_state["USER_SCATTER_SIZE"]
+
+    @USER_SCATTER_SIZE.setter
+    def USER_SCATTER_SIZE(self, new_value: float):
+        streamlit.session_state["USER_SCATTER_SIZE"] = new_value
+
+    @property
     def color(self) -> RGBAColor:
         colorspace = self.USER_SOURCE_COLORSPACE
         if self.USER_SOURCE_FORCE_LINEAR:
@@ -200,12 +210,12 @@ class UserConfig:
             image,
             colourspace=colour_colorspace,
             colourspaces=[colour_colorspace],
-            # scatter_kwargs={
-            #     "s": 90,  # size
-            #     "c": [1, 1, 1],  # color
-            #     "marker": "+",
-            #     "zorder": 0,
-            # },
+            scatter_kwargs={
+                "s": self.USER_SCATTER_SIZE,
+                # "c": [1, 1, 1],  # color
+                # "marker": "+",
+                # "zorder": 0,
+            },
             # styling
             spectral_locus_colours="RGB" if self.USER_RGB_LOCUS else None,
             show_diagram_colours=self.USER_DIAGRAM_SHOW_BACKGROUND,

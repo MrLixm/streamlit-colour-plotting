@@ -51,6 +51,15 @@ def widget_transparent_background(key, force_update=False):
     config().USER_TRANSPARENT_BACKGROUND = streamlit.session_state[key]
 
 
+@widgetify
+def widget_scatter_size(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_SCATTER_SIZE
+        return
+
+    config().USER_SCATTER_SIZE = streamlit.session_state[key]
+
+
 def create_sidebar():
     streamlit.title("Options".upper())
 
@@ -93,4 +102,13 @@ def create_sidebar():
         label="Use Transparent Background",
         key=str(widget_transparent_background),
         on_change=widget_transparent_background,
+    )
+
+    widget_scatter_size(force_update=True)
+    streamlit.slider(
+        label="Scatter size",
+        min_value=0.0,
+        max_value=100.0,
+        key=str(widget_scatter_size),
+        on_change=widget_scatter_size,
     )
