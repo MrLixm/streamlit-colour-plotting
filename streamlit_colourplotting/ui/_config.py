@@ -48,6 +48,8 @@ class UserConfig:
             streamlit.session_state["USER_SOURCE_TYPE"] = SourceType.color.value
         if "USER_DIAGRAM_METHOD" not in streamlit.session_state:
             streamlit.session_state["USER_DIAGRAM_METHOD"] = DiagramMethod.cie1976.value
+        if "USER_DIAGRAM_SHOW_BACKGROUND" not in streamlit.session_state:
+            streamlit.session_state["USER_DIAGRAM_SHOW_BACKGROUND"] = False
         if "USER_SOURCE_COLOR" not in streamlit.session_state:
             streamlit.session_state["USER_SOURCE_COLOR"] = RGBAColor(0.0, 0.0, 0.0)
         if "USER_SOURCE_COLORSPACE" not in streamlit.session_state:
@@ -75,6 +77,14 @@ class UserConfig:
     @USER_DIAGRAM_METHOD.setter
     def USER_DIAGRAM_METHOD(self, new_value: DiagramMethod):
         streamlit.session_state["USER_DIAGRAM_METHOD"] = new_value.value
+
+    @property
+    def USER_DIAGRAM_SHOW_BACKGROUND(self) -> bool:
+        return streamlit.session_state["USER_DIAGRAM_SHOW_BACKGROUND"]
+
+    @USER_DIAGRAM_SHOW_BACKGROUND.setter
+    def USER_DIAGRAM_SHOW_BACKGROUND(self, new_value: bool):
+        streamlit.session_state["USER_DIAGRAM_SHOW_BACKGROUND"] = new_value
 
     @property
     def USER_SOURCE_COLOR(self) -> RGBAColor:
@@ -178,7 +188,7 @@ class UserConfig:
             # },
             # styling
             spectral_locus_colours="RGB",
-            show_diagram_colours=False,
+            show_diagram_colours=self.USER_DIAGRAM_SHOW_BACKGROUND,
             transparent_background=False,
             standalone=False,
         )

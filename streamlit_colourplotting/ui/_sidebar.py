@@ -24,6 +24,15 @@ def widget_diagram_method(key, force_update=False):
     config().USER_DIAGRAM_METHOD = DiagramMethod(streamlit.session_state[key])
 
 
+@widgetify
+def widget_show_diagram_background(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_DIAGRAM_SHOW_BACKGROUND
+        return
+
+    config().USER_DIAGRAM_SHOW_BACKGROUND = streamlit.session_state[key]
+
+
 def create_sidebar():
     streamlit.title("Options".upper())
 
@@ -45,4 +54,12 @@ def create_sidebar():
         help="Choose which model to use for the chromaticity diagram.",
         key=str(widget_diagram_method),
         on_change=widget_diagram_method,
+    )
+
+    widget_show_diagram_background(force_update=True)
+    streamlit.checkbox(
+        label="Show Diagram Background",
+        key=str(widget_show_diagram_background),
+        on_change=widget_show_diagram_background,
+        help="If enabled the diagram shape will have a colored background.",
     )
