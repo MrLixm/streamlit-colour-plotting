@@ -1,5 +1,8 @@
 import enum
 
+import colour
+import matplotlib.pyplot
+import numpy
 import streamlit
 from cocoon import RgbColorspace
 from cocoon import sRGB_COLORSPACE
@@ -100,6 +103,45 @@ class UserConfig:
             colorspace = colorspace.as_linear_copy()
         color = self.USER_SOURCE_COLOR.as_colorspace(colorspace)
         return color
+
+    @property
+    def image(self) -> numpy.ndarray:
+        if self.USER_SOURCE_TYPE == SourceType.color:
+            image = numpy.full([1, 1, 3], self.color.to_array(alpha=False))
+            return image
+        else:
+            # TODO when image implemented
+            raise NotImplementedError()
+
+    @property
+    def plot(self) -> tuple[matplotlib.pyplot.Figure, matplotlib.pyplot.Axes]:
+        samples = 10
+        colorspace = self.USER_SOURCE_COLORSPACE
+        if self.USER_SOURCE_FORCE_LINEAR:
+            colorspace = self.USER_SOURCE_COLORSPACE.as_linear_copy()
+
+        colour_colorspace = colorspace.as_colour_colorspace()
+
+        (
+            figure,
+            axes,
+        ) = colour.plotting.models.plot_RGB_chromaticities_in_chromaticity_diagram(
+            self.image[::samples, ::samples, ...],
+            colourspace=colour_colorspace,
+            colourspaces=[colour_colorspace],
+            # scatter_kwargs={
+            #     "s": 90,  # size
+            #     "c": [1, 1, 1],  # color
+            #     "marker": "+",
+            #     "zorder": 0,
+            # },
+            # styling
+            spectral_locus_colours="RGB",
+            show_diagram_colours=False,
+            transparent_background=False,
+            standalone=False,
+        )
+        return figure, axes
 
 
 def config() -> UserConfig:

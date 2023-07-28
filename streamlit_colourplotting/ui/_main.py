@@ -39,6 +39,13 @@ def create_body_source():
     if config().USER_SOURCE_TYPE == config().USER_SOURCE_TYPE.color:
         create_color_picker()
 
+    streamlit.divider()
+
+    with streamlit.spinner("Generating plot ..."):
+        figure = config().plot[0]
+
+    streamlit.pyplot(figure)
+
 
 def create_main_ui():
     streamlit.title("Colour plotter".upper())
