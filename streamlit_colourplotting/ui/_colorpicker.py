@@ -15,17 +15,26 @@ from ._colorspacepicker import create_colorspace_picker
 
 
 @widgetify
-def widget_color_format(key):
+def widget_color_format(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        # warning the default value should not be hexadecimal !
+        streamlit.session_state[key] = config().USER_SOURCE_COLOR_FORMAT.value
+        return
+
     user_value = streamlit.session_state[key]
     value = ColorStringFormat(user_value)
+
     config().USER_SOURCE_COLOR_FORMAT = value
     widget_color_source(force_update=True)
+
+    # we assume hexadecimal color are always encoded as "display sRGB"
+    if value == value.hex:
+        config().USER_SOURCE_COLORSPACE = sRGB_COLORSPACE
+        config().USER_SOURCE_FORCE_LINEAR = False
 
 
 @widgetify
 def widget_color_source(key, force_update=False):
-    config().USER_SOURCE_ERROR = ""
-
     if key not in streamlit.session_state or force_update:
         streamlit.session_state[key] = convert_color_to_str(
             config().USER_SOURCE_COLOR,
@@ -34,18 +43,18 @@ def widget_color_source(key, force_update=False):
         return
 
     user_value = streamlit.session_state[key]
-
     validated = validate_color_str(user_value, config().USER_SOURCE_COLOR_FORMAT)
+
     if validated == validated.invalid:
-        config().USER_SOURCE_ERROR = (
-            "Invalid color value submitted, reseting to previous."
-        )
+        user_issues = config().USER_SOURCE_ERROR
+        config().USER_SOURCE_ERROR = user_issues | user_issues.value_error
         del streamlit.session_state[key]
         return
 
     safe_user_value = fix_color_str(user_value, config().USER_SOURCE_COLOR_FORMAT)
-    streamlit.session_state[key] = safe_user_value
     color = convert_str_to_color(safe_user_value, config().USER_SOURCE_COLOR_FORMAT)
+
+    streamlit.session_state[key] = safe_user_value
     config().USER_SOURCE_COLOR = color
 
 
@@ -68,27 +77,23 @@ def create_color_picker():
 
     create_colorspace_picker()
 
-    if config().USER_SOURCE_ERROR:
-        streamlit.warning(config().USER_SOURCE_ERROR)
-
     column1, column2, column3 = streamlit.columns([0.15, 0.3, 0.55])
 
     with column1:
         create_color_preview()
 
     with column2:
+        widget_color_format(force_update=True)
         options = [item.value for item in ColorStringFormat]
         streamlit.selectbox(
             label="Color Format",
             options=options,
-            index=options.index(config().USER_SOURCE_COLOR_FORMAT.value),
-            help="Choose how is formatted your RGB color.\nA `.4` means 4 digit precision.",
+            help="Choose how is formatted your RGB color.\nA `.4` means 4 digit precision.\nhexadecimal are always assume to be sRGB encoded",
             key=str(widget_color_format),
             on_change=widget_color_format,
         )
     with column3:
-        # update the session state key, so we don't need to provide `value` param
-        widget_color_source()
+        widget_color_source(force_update=True)
         color_text = streamlit.text_input(
             label="Color Value",
             # label_visibility="collapsed",

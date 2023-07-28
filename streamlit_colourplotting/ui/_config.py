@@ -16,6 +16,17 @@ class SourceType(enum.Enum):
         return [item.value for item in cls]
 
 
+class UserIssue(enum.IntFlag):
+    """
+    A specific issue that can happen during interaction with interface. They can be combined.
+    """
+
+    unset = enum.auto()
+    value_error = enum.auto()
+    hex_colorspace = enum.auto()
+    hex_force_linear = enum.auto()
+
+
 class UserConfig:
     def __init__(self):
         if "USER_SOURCE_TYPE" not in streamlit.session_state:
@@ -30,7 +41,7 @@ class UserConfig:
             k = "USER_SOURCE_COLOR_FORMAT"
             streamlit.session_state[k] = ColorStringFormat.float_d4
         if "USER_SOURCE_ERROR" not in streamlit.session_state:
-            streamlit.session_state["USER_SOURCE_ERROR"] = ""
+            streamlit.session_state["USER_SOURCE_ERROR"] = UserIssue.unset
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
@@ -73,11 +84,11 @@ class UserConfig:
         streamlit.session_state["USER_SOURCE_FORCE_LINEAR"] = new_value
 
     @property
-    def USER_SOURCE_ERROR(self) -> str:
+    def USER_SOURCE_ERROR(self) -> UserIssue:
         return streamlit.session_state["USER_SOURCE_ERROR"]
 
     @USER_SOURCE_ERROR.setter
-    def USER_SOURCE_ERROR(self, new_value: str):
+    def USER_SOURCE_ERROR(self, new_value: UserIssue):
         streamlit.session_state["USER_SOURCE_ERROR"] = new_value
 
     @property

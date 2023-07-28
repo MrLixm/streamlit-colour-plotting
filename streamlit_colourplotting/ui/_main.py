@@ -6,8 +6,36 @@ from ._sidebar import create_sidebar
 from ._colorpicker import create_color_picker
 
 
+def create_issue_warning():
+    """
+    Create a widget to display warnings the user might have generated.
+    """
+    issues = config().USER_SOURCE_ERROR
+    message = ""
+
+    if issues == issues.unset:
+        return
+
+    if issues & issues.value_error:
+        message += "- Invalid color value submitted, reverting to previous.\n"
+
+    if issues & issues.hex_colorspace:
+        message += "- hexadecimal colors can only be sRGB, reverting.\n"
+
+    if issues & issues.hex_force_linear:
+        message += "- hexadecimal colors cannot be linear, reverting.\n"
+
+    streamlit.warning(message)
+
+    # clear all error so the message is not displayed on next refresh
+    config().USER_SOURCE_ERROR = issues.unset
+
+
 def create_body_source():
     streamlit.header("Source")
+
+    create_issue_warning()
+
     if config().USER_SOURCE_TYPE == config().USER_SOURCE_TYPE.color:
         create_color_picker()
 
