@@ -30,12 +30,24 @@ class UserIssue(enum.IntFlag):
     hex_force_linear = enum.auto()
 
 
+class DiagramMethod(enum.Enum):
+    cie1931 = "CIE 1931"
+    cie1960 = "CIE 1960 UCS"
+    cie1976 = "CIE 1976 UCS"
+
+    @classmethod
+    def labels(cls) -> list[str]:
+        return [item.value for item in cls]
+
+
 class UserConfig:
     def __init__(self):
         # note: session_state doesn't work well with Enums
 
         if "USER_SOURCE_TYPE" not in streamlit.session_state:
             streamlit.session_state["USER_SOURCE_TYPE"] = SourceType.color.value
+        if "USER_DIAGRAM_METHOD" not in streamlit.session_state:
+            streamlit.session_state["USER_DIAGRAM_METHOD"] = DiagramMethod.cie1976.value
         if "USER_SOURCE_COLOR" not in streamlit.session_state:
             streamlit.session_state["USER_SOURCE_COLOR"] = RGBAColor(0.0, 0.0, 0.0)
         if "USER_SOURCE_COLORSPACE" not in streamlit.session_state:
@@ -55,6 +67,14 @@ class UserConfig:
     @USER_SOURCE_TYPE.setter
     def USER_SOURCE_TYPE(self, new_value: SourceType):
         streamlit.session_state["USER_SOURCE_TYPE"] = new_value.value
+
+    @property
+    def USER_DIAGRAM_METHOD(self) -> DiagramMethod:
+        return DiagramMethod(streamlit.session_state["USER_DIAGRAM_METHOD"])
+
+    @USER_DIAGRAM_METHOD.setter
+    def USER_DIAGRAM_METHOD(self, new_value: DiagramMethod):
+        streamlit.session_state["USER_DIAGRAM_METHOD"] = new_value.value
 
     @property
     def USER_SOURCE_COLOR(self) -> RGBAColor:
@@ -107,7 +127,8 @@ class UserConfig:
     @property
     def image(self) -> numpy.ndarray:
         if self.USER_SOURCE_TYPE == SourceType.color:
-            image = numpy.full([1, 1, 3], self.color.to_array(alpha=False))
+            # NOTE: bug with 1976 method, doesn't accept 1x1 array
+            image = numpy.full([2, 2, 3], self.color.to_array(alpha=False))
             return image
         else:
             # TODO when image implemented
@@ -116,17 +137,37 @@ class UserConfig:
     @property
     def plot(self) -> tuple[matplotlib.pyplot.Figure, matplotlib.pyplot.Axes]:
         samples = 10
+        image = self.image
+
+        if image.shape[0] > samples or image.shape[1] > samples:
+            image: numpy.ndarray = image[::samples, ::samples, ...]
+
         colorspace = self.USER_SOURCE_COLORSPACE
         if self.USER_SOURCE_FORCE_LINEAR:
             colorspace = self.USER_SOURCE_COLORSPACE.as_linear_copy()
 
         colour_colorspace = colorspace.as_colour_colorspace()
 
+        if self.USER_DIAGRAM_METHOD == DiagramMethod.cie1931:
+            plot_RGB_chromaticities_function = (
+                colour.plotting.plot_RGB_chromaticities_in_chromaticity_diagram_CIE1931
+            )
+        elif self.USER_DIAGRAM_METHOD == DiagramMethod.cie1960:
+            plot_RGB_chromaticities_function = (
+                colour.plotting.plot_RGB_chromaticities_in_chromaticity_diagram_CIE1960UCS
+            )
+        elif self.USER_DIAGRAM_METHOD == DiagramMethod.cie1976:
+            plot_RGB_chromaticities_function = (
+                colour.plotting.plot_RGB_chromaticities_in_chromaticity_diagram_CIE1976UCS
+            )
+        else:
+            raise ValueError(f"Unsupported diagram method {self.USER_DIAGRAM_METHOD}")
+
         (
             figure,
             axes,
-        ) = colour.plotting.models.plot_RGB_chromaticities_in_chromaticity_diagram(
-            self.image[::samples, ::samples, ...],
+        ) = plot_RGB_chromaticities_function(
+            image,
             colourspace=colour_colorspace,
             colourspaces=[colour_colorspace],
             # scatter_kwargs={
