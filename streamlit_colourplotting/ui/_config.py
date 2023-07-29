@@ -325,6 +325,8 @@ class UserConfig:
             colorspace = self.USER_SOURCE_COLORSPACE.as_linear_copy()
 
         colour_colorspace = colorspace.as_colour_colorspace()
+        # NOTE: colour plotting function does not use the usual apply_cctf_decoding=True
+        image = colour_colorspace.cctf_decoding(image)
 
         if self.USER_DIAGRAM_METHOD == DiagramMethod.cie1931:
             plot_RGB_chromaticities_function = (
