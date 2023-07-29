@@ -136,6 +136,15 @@ def widget_figure_size(key, force_update=False):
     config().USER_FIGURE_SIZE = streamlit.session_state[key] / 2.54
 
 
+@widgetify
+def widget_figure_font_size(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_FIGURE_FONT_SIZE
+        return
+
+    config().USER_FIGURE_FONT_SIZE = streamlit.session_state[key]
+
+
 def create_sidebar():
     streamlit.title("Options".upper())
 
@@ -264,4 +273,13 @@ def create_sidebar():
         help="Size of the diagram in cm.",
         key=str(widget_figure_size),
         on_change=widget_figure_size,
+    )
+
+    widget_figure_font_size(force_update=True)
+    streamlit.slider(
+        label="Font Size",
+        min_value=1.0,
+        max_value=50.0,
+        key=str(widget_figure_font_size),
+        on_change=widget_figure_font_size,
     )
