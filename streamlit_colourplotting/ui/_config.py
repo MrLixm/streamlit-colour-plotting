@@ -121,6 +121,10 @@ class UserConfig:
             streamlit.session_state["USER_SCATTER_COLOR_RGB"] = True
         if "USER_MARKER_STYLE" not in streamlit.session_state:
             streamlit.session_state["USER_MARKER_STYLE"] = MarkerShapeStyle.circle.value
+        if "USER_PLOT_POINTER_GAMUT" not in streamlit.session_state:
+            streamlit.session_state["USER_PLOT_POINTER_GAMUT"] = False
+        if "USER_POINTER_GAMUT_ALPHA" not in streamlit.session_state:
+            streamlit.session_state["USER_POINTER_GAMUT_ALPHA"] = 1.0
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
@@ -235,6 +239,22 @@ class UserConfig:
         streamlit.session_state["USER_MARKER_STYLE"] = new_value.value
 
     @property
+    def USER_PLOT_POINTER_GAMUT(self) -> bool:
+        return streamlit.session_state["USER_PLOT_POINTER_GAMUT"]
+
+    @USER_PLOT_POINTER_GAMUT.setter
+    def USER_PLOT_POINTER_GAMUT(self, new_value: bool):
+        streamlit.session_state["USER_PLOT_POINTER_GAMUT"] = new_value
+
+    @property
+    def USER_POINTER_GAMUT_ALPHA(self) -> float:
+        return streamlit.session_state["USER_POINTER_GAMUT_ALPHA"]
+
+    @USER_POINTER_GAMUT_ALPHA.setter
+    def USER_POINTER_GAMUT_ALPHA(self, new_value: float):
+        streamlit.session_state["USER_POINTER_GAMUT_ALPHA"] = new_value
+
+    @property
     def color(self) -> RGBAColor:
         colorspace = self.USER_SOURCE_COLORSPACE
         if self.USER_SOURCE_FORCE_LINEAR:
@@ -292,11 +312,13 @@ class UserConfig:
                 "s": self.USER_SCATTER_SIZE,
                 "c": "RGB" if self.USER_SCATTER_COLOR_RGB else self.USER_SCATTER_COLOR,
                 "marker": self.USER_MARKER_STYLE.value,
-                # "zorder": 0,
+                "zorder": 0,
             },
             # styling
             spectral_locus_colours="RGB" if self.USER_RGB_LOCUS else None,
             show_diagram_colours=self.USER_DIAGRAM_SHOW_BACKGROUND,
+            show_pointer_gamut=self.USER_PLOT_POINTER_GAMUT,
+            pointer_gamut_opacity=self.USER_POINTER_GAMUT_ALPHA,
             transparent_background=self.USER_TRANSPARENT_BACKGROUND,
             standalone=False,
         )

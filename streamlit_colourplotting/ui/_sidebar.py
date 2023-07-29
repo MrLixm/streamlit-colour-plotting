@@ -88,6 +88,24 @@ def widget_marker_style(key, force_update=False):
     config().USER_MARKER_STYLE = MarkerShapeStyle(streamlit.session_state[key])
 
 
+@widgetify
+def widget_plot_pointer_gamut(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_PLOT_POINTER_GAMUT
+        return
+
+    config().USER_PLOT_POINTER_GAMUT = streamlit.session_state[key]
+
+
+@widgetify
+def widget_pointer_gamut_alpha(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_POINTER_GAMUT_ALPHA
+        return
+
+    config().USER_POINTER_GAMUT_ALPHA = streamlit.session_state[key]
+
+
 def create_sidebar():
     streamlit.title("Options".upper())
 
@@ -131,6 +149,23 @@ def create_sidebar():
         key=str(widget_transparent_background),
         on_change=widget_transparent_background,
     )
+
+    widget_plot_pointer_gamut(force_update=True)
+    show_pointer_gamut = streamlit.checkbox(
+        label="Show Pointer's Gamut",
+        key=str(widget_plot_pointer_gamut),
+        on_change=widget_plot_pointer_gamut,
+    )
+
+    widget_pointer_gamut_alpha(force_update=True)
+    if show_pointer_gamut:
+        streamlit.slider(
+            label="Pointer's Gamut Opacity",
+            min_value=0.0,
+            max_value=1.0,
+            key=str(widget_pointer_gamut_alpha),
+            on_change=widget_pointer_gamut_alpha,
+        )
 
     widget_scatter_size(force_update=True)
     streamlit.slider(
