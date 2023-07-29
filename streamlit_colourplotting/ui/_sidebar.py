@@ -106,6 +106,15 @@ def widget_pointer_gamut_alpha(key, force_update=False):
     config().USER_POINTER_GAMUT_ALPHA = streamlit.session_state[key]
 
 
+@widgetify
+def widget_show_whitepoint(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_SHOW_WHITEPOINT
+        return
+
+    config().USER_SHOW_WHITEPOINT = streamlit.session_state[key]
+
+
 def create_sidebar():
     streamlit.title("Options".upper())
 
@@ -148,6 +157,13 @@ def create_sidebar():
         label="Use Transparent Background",
         key=str(widget_transparent_background),
         on_change=widget_transparent_background,
+    )
+
+    widget_show_whitepoint(force_update=True)
+    streamlit.checkbox(
+        label="Show Whitepoints",
+        key=str(widget_show_whitepoint),
+        on_change=widget_show_whitepoint,
     )
 
     widget_plot_pointer_gamut(force_update=True)

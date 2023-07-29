@@ -125,6 +125,8 @@ class UserConfig:
             streamlit.session_state["USER_PLOT_POINTER_GAMUT"] = False
         if "USER_POINTER_GAMUT_ALPHA" not in streamlit.session_state:
             streamlit.session_state["USER_POINTER_GAMUT_ALPHA"] = 1.0
+        if "USER_SHOW_WHITEPOINT" not in streamlit.session_state:
+            streamlit.session_state["USER_SHOW_WHITEPOINT"] = True
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
@@ -255,6 +257,14 @@ class UserConfig:
         streamlit.session_state["USER_POINTER_GAMUT_ALPHA"] = new_value
 
     @property
+    def USER_SHOW_WHITEPOINT(self) -> bool:
+        return streamlit.session_state["USER_SHOW_WHITEPOINT"]
+
+    @USER_SHOW_WHITEPOINT.setter
+    def USER_SHOW_WHITEPOINT(self, new_value: bool):
+        streamlit.session_state["USER_SHOW_WHITEPOINT"] = new_value
+
+    @property
     def color(self) -> RGBAColor:
         colorspace = self.USER_SOURCE_COLORSPACE
         if self.USER_SOURCE_FORCE_LINEAR:
@@ -317,6 +327,7 @@ class UserConfig:
             # styling
             spectral_locus_colours="RGB" if self.USER_RGB_LOCUS else None,
             show_diagram_colours=self.USER_DIAGRAM_SHOW_BACKGROUND,
+            show_whitepoints=self.USER_SHOW_WHITEPOINT,
             show_pointer_gamut=self.USER_PLOT_POINTER_GAMUT,
             pointer_gamut_opacity=self.USER_POINTER_GAMUT_ALPHA,
             transparent_background=self.USER_TRANSPARENT_BACKGROUND,
