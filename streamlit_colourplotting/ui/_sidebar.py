@@ -60,6 +60,24 @@ def widget_scatter_size(key, force_update=False):
     config().USER_SCATTER_SIZE = streamlit.session_state[key]
 
 
+@widgetify
+def widget_scatter_color_rgb(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_SCATTER_COLOR_RGB
+        return
+
+    config().USER_SCATTER_COLOR_RGB = streamlit.session_state[key]
+
+
+@widgetify
+def widget_scatter_color(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_SCATTER_COLOR
+        return
+
+    config().USER_SCATTER_COLOR = streamlit.session_state[key]
+
+
 def create_sidebar():
     streamlit.title("Options".upper())
 
@@ -106,9 +124,32 @@ def create_sidebar():
 
     widget_scatter_size(force_update=True)
     streamlit.slider(
-        label="Scatter size",
+        label="Scatter Size",
         min_value=0.0,
         max_value=100.0,
         key=str(widget_scatter_size),
         on_change=widget_scatter_size,
     )
+
+    streamlit.markdown("###### Scatter Color")
+
+    column1, column2 = streamlit.columns([0.15, 0.85])
+
+    with column2:
+        widget_scatter_color_rgb(force_update=True)
+        use_rgb = streamlit.checkbox(
+            label="Use RGB",
+            key=str(widget_scatter_color_rgb),
+            on_change=widget_scatter_color_rgb,
+            help="If checked, each scatter marker take the color it represent.",
+        )
+
+    with column1:
+        widget_scatter_color(force_update=True)
+        streamlit.color_picker(
+            label="Scatter Color",
+            label_visibility="collapsed",
+            disabled=use_rgb,
+            key=str(widget_scatter_color),
+            on_change=widget_scatter_color,
+        )

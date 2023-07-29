@@ -67,6 +67,10 @@ class UserConfig:
             streamlit.session_state["USER_SOURCE_ERROR"] = UserIssue.unset.value
         if "USER_SCATTER_SIZE" not in streamlit.session_state:
             streamlit.session_state["USER_SCATTER_SIZE"] = 25.0
+        if "USER_SCATTER_COLOR" not in streamlit.session_state:
+            streamlit.session_state["USER_SCATTER_COLOR"] = "#53DD97"
+        if "USER_SCATTER_COLOR_RGB" not in streamlit.session_state:
+            streamlit.session_state["USER_SCATTER_COLOR_RGB"] = True
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
@@ -157,6 +161,22 @@ class UserConfig:
         streamlit.session_state["USER_SCATTER_SIZE"] = new_value
 
     @property
+    def USER_SCATTER_COLOR(self) -> str:
+        return streamlit.session_state["USER_SCATTER_COLOR"]
+
+    @USER_SCATTER_COLOR.setter
+    def USER_SCATTER_COLOR(self, new_value: str):
+        streamlit.session_state["USER_SCATTER_COLOR"] = new_value
+
+    @property
+    def USER_SCATTER_COLOR_RGB(self) -> bool:
+        return streamlit.session_state["USER_SCATTER_COLOR_RGB"]
+
+    @USER_SCATTER_COLOR_RGB.setter
+    def USER_SCATTER_COLOR_RGB(self, new_value: bool):
+        streamlit.session_state["USER_SCATTER_COLOR_RGB"] = new_value
+
+    @property
     def color(self) -> RGBAColor:
         colorspace = self.USER_SOURCE_COLORSPACE
         if self.USER_SOURCE_FORCE_LINEAR:
@@ -212,7 +232,7 @@ class UserConfig:
             colourspaces=[colour_colorspace],
             scatter_kwargs={
                 "s": self.USER_SCATTER_SIZE,
-                # "c": [1, 1, 1],  # color
+                "c": "RGB" if self.USER_SCATTER_COLOR_RGB else self.USER_SCATTER_COLOR,
                 # "marker": "+",
                 # "zorder": 0,
             },
