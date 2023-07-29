@@ -169,14 +169,14 @@ def create_sidebar():
 
     widget_scatter_size(force_update=True)
     streamlit.slider(
-        label="Scatter Size",
+        label="Marker Size",
         min_value=0.0,
         max_value=100.0,
         key=str(widget_scatter_size),
         on_change=widget_scatter_size,
     )
 
-    streamlit.markdown("###### Scatter Color")
+    streamlit.markdown("###### Marker Color")
 
     column1, column2 = streamlit.columns([0.15, 0.85])
 
@@ -192,7 +192,7 @@ def create_sidebar():
     with column1:
         widget_scatter_color(force_update=True)
         streamlit.color_picker(
-            label="Scatter Color",
+            label="Marker Color",
             label_visibility="collapsed",
             disabled=use_rgb,
             key=str(widget_scatter_color),
