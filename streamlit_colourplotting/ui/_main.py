@@ -4,6 +4,7 @@ from streamlit_colourplotting.ui import config
 from streamlit_colourplotting import widgetify
 from ._sidebar import create_sidebar
 from ._colorpicker import create_color_picker
+from ._imagepicker import create_image_picker
 
 
 def create_issue_warning():
@@ -38,6 +39,8 @@ def create_body_source():
 
     if config().USER_SOURCE_TYPE == config().USER_SOURCE_TYPE.color:
         create_color_picker()
+    elif config().USER_SOURCE_TYPE == config().USER_SOURCE_TYPE.image:
+        create_image_picker()
 
     streamlit.divider()
 

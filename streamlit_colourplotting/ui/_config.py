@@ -1,4 +1,6 @@
 import enum
+import io
+from typing import Optional
 
 import colour
 import matplotlib.pyplot
@@ -8,6 +10,8 @@ from cocoon import RgbColorspace
 from cocoon import sRGB_COLORSPACE
 from cocoon.color import RGBAColor
 from cocoon.color import ColorStringFormat
+
+import streamlit_colourplotting.core
 
 
 class SourceType(enum.Enum):
@@ -127,6 +131,8 @@ class UserConfig:
             streamlit.session_state["USER_POINTER_GAMUT_ALPHA"] = 1.0
         if "USER_SHOW_WHITEPOINT" not in streamlit.session_state:
             streamlit.session_state["USER_SHOW_WHITEPOINT"] = True
+        if "USER_IMAGE" not in streamlit.session_state:
+            streamlit.session_state["USER_IMAGE"] = None
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
@@ -265,6 +271,14 @@ class UserConfig:
         streamlit.session_state["USER_SHOW_WHITEPOINT"] = new_value
 
     @property
+    def USER_IMAGE(self) -> Optional[numpy.ndarray]:
+        return streamlit.session_state["USER_IMAGE"]
+
+    @USER_IMAGE.setter
+    def USER_IMAGE(self, new_value: Optional[numpy.ndarray]):
+        streamlit.session_state["USER_IMAGE"] = new_value
+
+    @property
     def color(self) -> RGBAColor:
         colorspace = self.USER_SOURCE_COLORSPACE
         if self.USER_SOURCE_FORCE_LINEAR:
@@ -274,13 +288,19 @@ class UserConfig:
 
     @property
     def image(self) -> numpy.ndarray:
+        """
+        Return a floating point R-G-B image with an arbitrary dimension.
+        """
         if self.USER_SOURCE_TYPE == SourceType.color:
             # NOTE: bug with 1976 method, doesn't accept 1x1 array
             image = numpy.full([2, 2, 3], self.color.to_array(alpha=False))
             return image
-        else:
-            # TODO when image implemented
-            raise NotImplementedError()
+
+        elif self.USER_SOURCE_TYPE == SourceType.image:
+            image = self.USER_IMAGE
+            if image is None:
+                return numpy.full([2, 2, 3], [0.0, 0.0, 0.0])
+            return image
 
     @property
     def plot(self) -> tuple[matplotlib.pyplot.Figure, matplotlib.pyplot.Axes]:

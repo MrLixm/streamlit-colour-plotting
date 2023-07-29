@@ -1,3 +1,8 @@
+import os
+
+# must be executed before cv2 first import
+os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
+
 import colour.utilities
 import streamlit
 import streamlit_colourplotting
