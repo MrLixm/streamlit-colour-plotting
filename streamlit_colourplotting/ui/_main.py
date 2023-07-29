@@ -44,7 +44,7 @@ def create_body_source():
     with streamlit.spinner("Generating plot ..."):
         figure = config().plot[0]
 
-    streamlit.pyplot(figure)
+    streamlit.pyplot(figure, clear_figure=True)
 
 
 def create_main_ui():
