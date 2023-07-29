@@ -126,6 +126,16 @@ def widget_image_samples(key, force_update=False):
     config().USER_IMAGE_SAMPLES = streamlit.session_state[key]
 
 
+@widgetify
+def widget_figure_size(key, force_update=False):
+    # NOTE: conversion of inch (pyplot) to centimeters (gui)
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_FIGURE_SIZE * 2.54
+        return
+
+    config().USER_FIGURE_SIZE = streamlit.session_state[key] / 2.54
+
+
 def create_sidebar():
     streamlit.title("Options".upper())
 
@@ -244,4 +254,14 @@ def create_sidebar():
         min_value=1,
         key=str(widget_image_samples),
         on_change=widget_image_samples,
+    )
+
+    widget_figure_size(force_update=True)
+    streamlit.slider(
+        label="Figure Size",
+        min_value=1.0,
+        max_value=50.0,
+        help="Size of the diagram in cm.",
+        key=str(widget_figure_size),
+        on_change=widget_figure_size,
     )

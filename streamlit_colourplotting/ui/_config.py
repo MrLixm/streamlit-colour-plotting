@@ -3,6 +3,7 @@ import io
 from typing import Optional
 
 import colour
+import matplotlib.style
 import matplotlib.pyplot
 import numpy
 import streamlit
@@ -132,6 +133,8 @@ class UserConfig:
             streamlit.session_state["USER_IMAGE"] = None
         if "USER_IMAGE_SAMPLES" not in streamlit.session_state:
             streamlit.session_state["USER_IMAGE_SAMPLES"] = 10
+        if "USER_FIGURE_SIZE" not in streamlit.session_state:
+            streamlit.session_state["USER_FIGURE_SIZE"] = 10.0
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
@@ -286,6 +289,14 @@ class UserConfig:
         streamlit.session_state["USER_IMAGE_SAMPLES"] = new_value
 
     @property
+    def USER_FIGURE_SIZE(self) -> float:
+        return streamlit.session_state["USER_FIGURE_SIZE"]
+
+    @USER_FIGURE_SIZE.setter
+    def USER_FIGURE_SIZE(self, new_value: float):
+        streamlit.session_state["USER_FIGURE_SIZE"] = new_value
+
+    @property
     def color(self) -> RGBAColor:
         colorspace = self.USER_SOURCE_COLORSPACE
         if self.USER_SOURCE_FORCE_LINEAR:
@@ -340,28 +351,33 @@ class UserConfig:
         else:
             raise ValueError(f"Unsupported diagram method {self.USER_DIAGRAM_METHOD}")
 
-        (
-            figure,
-            axes,
-        ) = plot_RGB_chromaticities_function(
-            image,
-            colourspace=colour_colorspace,
-            colourspaces=[colour_colorspace],
-            scatter_kwargs={
-                "s": self.USER_SCATTER_SIZE,
-                "c": "RGB" if self.USER_SCATTER_COLOR_RGB else self.USER_SCATTER_COLOR,
-                "marker": self.USER_MARKER_STYLE.as_core(),
-                "zorder": 0,
-            },
-            # styling
-            spectral_locus_colours="RGB" if self.USER_RGB_LOCUS else None,
-            show_diagram_colours=self.USER_DIAGRAM_SHOW_BACKGROUND,
-            show_whitepoints=self.USER_SHOW_WHITEPOINT,
-            show_pointer_gamut=self.USER_PLOT_POINTER_GAMUT,
-            pointer_gamut_opacity=self.USER_POINTER_GAMUT_ALPHA,
-            transparent_background=self.USER_TRANSPARENT_BACKGROUND,
-            standalone=False,
-        )
+        style = {
+            "figure.figsize": (self.USER_FIGURE_SIZE, self.USER_FIGURE_SIZE),
+        }
+        marker_color = "RGB" if self.USER_SCATTER_COLOR_RGB else self.USER_SCATTER_COLOR
+        with matplotlib.style.context(style):
+            (
+                figure,
+                axes,
+            ) = plot_RGB_chromaticities_function(
+                image,
+                colourspace=colour_colorspace,
+                colourspaces=[colour_colorspace],
+                scatter_kwargs={
+                    "s": self.USER_SCATTER_SIZE,
+                    "c": marker_color,
+                    "marker": self.USER_MARKER_STYLE.as_core(),
+                    "zorder": 0,
+                },
+                # styling
+                spectral_locus_colours="RGB" if self.USER_RGB_LOCUS else None,
+                show_diagram_colours=self.USER_DIAGRAM_SHOW_BACKGROUND,
+                show_whitepoints=self.USER_SHOW_WHITEPOINT,
+                show_pointer_gamut=self.USER_PLOT_POINTER_GAMUT,
+                pointer_gamut_opacity=self.USER_POINTER_GAMUT_ALPHA,
+                transparent_background=self.USER_TRANSPARENT_BACKGROUND,
+                standalone=False,
+            )
         return figure, axes
 
 
