@@ -115,6 +115,15 @@ def widget_show_whitepoint(key, force_update=False):
     config().USER_SHOW_WHITEPOINT = streamlit.session_state[key]
 
 
+@widgetify
+def widget_image_samples(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_IMAGE_SAMPLES
+        return
+
+    config().USER_IMAGE_SAMPLES = streamlit.session_state[key]
+
+
 def create_sidebar():
     streamlit.title("Options".upper())
 
@@ -223,4 +232,14 @@ def create_sidebar():
         help="Style of the shape of the markers (scatter points).",
         key=str(widget_marker_style),
         on_change=widget_marker_style,
+    )
+
+    widget_image_samples(force_update=True)
+    streamlit.number_input(
+        label="Image Samples",
+        help="Only plot each pixel every N sample submitted.\n\n"
+        "Higher number increase processing speed of larger images.",
+        min_value=1,
+        key=str(widget_image_samples),
+        on_change=widget_image_samples,
     )

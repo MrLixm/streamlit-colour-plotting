@@ -133,6 +133,8 @@ class UserConfig:
             streamlit.session_state["USER_SHOW_WHITEPOINT"] = True
         if "USER_IMAGE" not in streamlit.session_state:
             streamlit.session_state["USER_IMAGE"] = None
+        if "USER_IMAGE_SAMPLES" not in streamlit.session_state:
+            streamlit.session_state["USER_IMAGE_SAMPLES"] = 10
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
@@ -279,6 +281,14 @@ class UserConfig:
         streamlit.session_state["USER_IMAGE"] = new_value
 
     @property
+    def USER_IMAGE_SAMPLES(self) -> int:
+        return streamlit.session_state["USER_IMAGE_SAMPLES"]
+
+    @USER_IMAGE_SAMPLES.setter
+    def USER_IMAGE_SAMPLES(self, new_value: int):
+        streamlit.session_state["USER_IMAGE_SAMPLES"] = new_value
+
+    @property
     def color(self) -> RGBAColor:
         colorspace = self.USER_SOURCE_COLORSPACE
         if self.USER_SOURCE_FORCE_LINEAR:
@@ -304,7 +314,7 @@ class UserConfig:
 
     @property
     def plot(self) -> tuple[matplotlib.pyplot.Figure, matplotlib.pyplot.Axes]:
-        samples = 10
+        samples = self.USER_IMAGE_SAMPLES
         image = self.image
 
         if image.shape[0] > samples or image.shape[1] > samples:
