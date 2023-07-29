@@ -213,57 +213,48 @@ def create_sidebar():
             on_change=widget_pointer_gamut_alpha,
         )
 
-    widget_scatter_size(force_update=True)
-    streamlit.slider(
-        label="Marker Size",
-        min_value=0.0,
-        max_value=100.0,
-        key=str(widget_scatter_size),
-        on_change=widget_scatter_size,
-    )
-
-    streamlit.markdown("###### Marker Color")
-
-    column1, column2 = streamlit.columns([0.15, 0.85])
-
-    with column2:
-        widget_scatter_color_rgb(force_update=True)
-        use_rgb = streamlit.checkbox(
-            label="Use RGB",
-            key=str(widget_scatter_color_rgb),
-            on_change=widget_scatter_color_rgb,
-            help="If checked, each scatter marker take the color it represent.",
+    with streamlit.expander("Markers Styling"):
+        widget_scatter_size(force_update=True)
+        streamlit.slider(
+            label="Marker Size",
+            min_value=0.0,
+            max_value=100.0,
+            key=str(widget_scatter_size),
+            on_change=widget_scatter_size,
         )
 
-    with column1:
-        widget_scatter_color(force_update=True)
-        streamlit.color_picker(
-            label="Marker Color",
-            label_visibility="collapsed",
-            disabled=use_rgb,
-            key=str(widget_scatter_color),
-            on_change=widget_scatter_color,
+        streamlit.markdown("###### Marker Color")
+
+        column1, column2 = streamlit.columns([0.15, 0.85])
+
+        with column2:
+            widget_scatter_color_rgb(force_update=True)
+            use_rgb = streamlit.checkbox(
+                label="Use RGB",
+                key=str(widget_scatter_color_rgb),
+                on_change=widget_scatter_color_rgb,
+                help="If checked, each scatter marker take the color it represent.",
+            )
+
+        with column1:
+            widget_scatter_color(force_update=True)
+            streamlit.color_picker(
+                label="Marker Color",
+                label_visibility="collapsed",
+                disabled=use_rgb,
+                key=str(widget_scatter_color),
+                on_change=widget_scatter_color,
+            )
+
+        widget_marker_style(force_update=True)
+        options = MarkerShapeStyle.labels()
+        streamlit.selectbox(
+            label="Marker Style",
+            options=options,
+            help="Style of the shape of the markers (scatter points).",
+            key=str(widget_marker_style),
+            on_change=widget_marker_style,
         )
-
-    widget_marker_style(force_update=True)
-    options = MarkerShapeStyle.labels()
-    streamlit.selectbox(
-        label="Marker Style",
-        options=options,
-        help="Style of the shape of the markers (scatter points).",
-        key=str(widget_marker_style),
-        on_change=widget_marker_style,
-    )
-
-    widget_image_samples(force_update=True)
-    streamlit.number_input(
-        label="Image Samples",
-        help="Only plot each pixel every N sample submitted.\n\n"
-        "Higher number increase processing speed of larger images.",
-        min_value=1,
-        key=str(widget_image_samples),
-        on_change=widget_image_samples,
-    )
 
     widget_figure_size(force_update=True)
     streamlit.slider(
@@ -282,4 +273,14 @@ def create_sidebar():
         max_value=50.0,
         key=str(widget_figure_font_size),
         on_change=widget_figure_font_size,
+    )
+
+    widget_image_samples(force_update=True)
+    streamlit.number_input(
+        label="Image Samples",
+        help="Only plot each pixel every N sample submitted.\n\n"
+        "Higher number increase processing speed of larger images.",
+        min_value=1,
+        key=str(widget_image_samples),
+        on_change=widget_image_samples,
     )
