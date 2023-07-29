@@ -12,6 +12,7 @@ from cocoon.color import RGBAColor
 from cocoon.color import ColorStringFormat
 
 import streamlit_colourplotting.core
+from streamlit_colourplotting._utils import UifiedEnum
 
 
 class SourceType(enum.Enum):
@@ -44,52 +45,48 @@ class DiagramMethod(enum.Enum):
         return [item.value for item in cls]
 
 
-class MarkerShapeStyle(enum.Enum):
+class MarkerShapeStyle(UifiedEnum):
     """
     Based on :class:`matplotlib.markers.MarkerStyle.markers`
     """
 
-    point = "."
-    pixel = ","
-    circle = "o"
-    triangle_down = "v"
-    triangle_up = "^"
-    triangle_left = "<"
-    triangle_right = ">"
-    tri_down = "1"
-    tri_up = "2"
-    tri_left = "3"
-    tri_right = "4"
-    octagon = "8"
-    square = "s"
-    pentagon = "p"
-    star = "*"
-    hexagon1 = "h"
-    hexagon2 = "H"
-    plus = "+"
-    x = "x"
-    diamond = "D"
-    thin_diamond = "d"
-    vline = "|"
-    hline = "_"
-    plus_filled = "P"
-    x_filled = "X"
-    tickleft = 0
-    tickright = 1
-    tickup = 2
-    tickdown = 3
-    caretleft = 4
-    caretright = 5
-    caretup = 6
-    caretdown = 7
-    caretleftbase = 8
-    caretrightbase = 9
-    caretupbase = 10
-    caretdownbase = 11
-
-    @classmethod
-    def labels(cls) -> list[str]:
-        return [item.value for item in cls]
+    point = (".", ".")
+    pixel = (",", ",")
+    circle = ("o", "o")
+    plus = ("+", "+")
+    x = ("x", "x")
+    star = ("*", "*")
+    triangle_down = ("v", "v")
+    triangle_up = ("^", "^")
+    triangle_left = ("<", "<")
+    triangle_right = (">", ">")
+    tri_down = ("tri1", "1")
+    tri_up = ("tri2", "2")
+    tri_left = ("tri3", "3")
+    tri_right = ("tri4", "4")
+    octagon = ("octagon", "8")
+    square = ("■", "s")
+    pentagon = ("penta", "p")
+    hexagon1 = ("hexa", "h")
+    hexagon2 = ("Hexa", "H")
+    diamond = ("◆", "D")
+    thin_diamond = ("◇", "d")
+    vline = ("|", "|")
+    hline = ("_", "_")
+    plus_filled = ("P", "P")
+    x_filled = ("X", "X")
+    tickleft = ("0", 0)
+    tickright = ("1", 1)
+    tickup = ("2", 2)
+    tickdown = ("3", 3)
+    caretleft = ("4", 4)
+    caretright = ("5", 5)
+    caretup = ("6", 6)
+    caretdown = ("7", 7)
+    caretleftbase = ("8", 8)
+    caretrightbase = ("9", 9)
+    caretupbase = ("10", 10)
+    caretdownbase = ("11", 11)
 
 
 class UserConfig:
@@ -353,7 +350,7 @@ class UserConfig:
             scatter_kwargs={
                 "s": self.USER_SCATTER_SIZE,
                 "c": "RGB" if self.USER_SCATTER_COLOR_RGB else self.USER_SCATTER_COLOR,
-                "marker": self.USER_MARKER_STYLE.value,
+                "marker": self.USER_MARKER_STYLE.as_core(),
                 "zorder": 0,
             },
             # styling

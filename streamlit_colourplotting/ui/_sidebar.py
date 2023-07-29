@@ -82,10 +82,12 @@ def widget_scatter_color(key, force_update=False):
 @widgetify
 def widget_marker_style(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_MARKER_STYLE.value
+        streamlit.session_state[key] = config().USER_MARKER_STYLE.as_label()
         return
 
-    config().USER_MARKER_STYLE = MarkerShapeStyle(streamlit.session_state[key])
+    config().USER_MARKER_STYLE = MarkerShapeStyle.from_label(
+        streamlit.session_state[key]
+    )
 
 
 @widgetify
