@@ -53,6 +53,17 @@ def create_body_source():
 def create_main_ui():
     streamlit.title("Colour plotter".upper())
 
+    # HACK to have columns child vertically aligned on the center
+    # HACK to have image caption above and not under
+    streamlit.markdown(
+        """<style>
+        div[data-testid="stHorizontalBlock"]{align-items:center;}
+        div[data-testid="stImage"]{flex-direction:column-reverse;}
+        div[data-testid="stImage"] div[data-testid="caption"] {margin-top:unset;}
+        </style>""",
+        unsafe_allow_html=True,
+    )
+
     with streamlit.sidebar:
         create_sidebar()
 

@@ -66,7 +66,7 @@ def create_color_preview():
     color = color.as_colorspace(sRGB_COLORSPACE)
     image_array = color.to_array(alpha=False)
     image_array = convert_float_to_int8(image_array)
-    image_array = numpy.full((32, 32, 3), image_array, dtype=numpy.uint8)
+    image_array = numpy.full((22, 32, 3), image_array, dtype=numpy.uint8)
     streamlit.image(image_array, caption="sRGB preview")
 
 
