@@ -40,6 +40,54 @@ class DiagramMethod(enum.Enum):
         return [item.value for item in cls]
 
 
+class MarkerShapeStyle(enum.Enum):
+    """
+    Based on :class:`matplotlib.markers.MarkerStyle.markers`
+    """
+
+    point = "."
+    pixel = ","
+    circle = "o"
+    triangle_down = "v"
+    triangle_up = "^"
+    triangle_left = "<"
+    triangle_right = ">"
+    tri_down = "1"
+    tri_up = "2"
+    tri_left = "3"
+    tri_right = "4"
+    octagon = "8"
+    square = "s"
+    pentagon = "p"
+    star = "*"
+    hexagon1 = "h"
+    hexagon2 = "H"
+    plus = "+"
+    x = "x"
+    diamond = "D"
+    thin_diamond = "d"
+    vline = "|"
+    hline = "_"
+    plus_filled = "P"
+    x_filled = "X"
+    tickleft = 0
+    tickright = 1
+    tickup = 2
+    tickdown = 3
+    caretleft = 4
+    caretright = 5
+    caretup = 6
+    caretdown = 7
+    caretleftbase = 8
+    caretrightbase = 9
+    caretupbase = 10
+    caretdownbase = 11
+
+    @classmethod
+    def labels(cls) -> list[str]:
+        return [item.value for item in cls]
+
+
 class UserConfig:
     def __init__(self):
         # note: session_state doesn't work well with Enums
@@ -71,6 +119,8 @@ class UserConfig:
             streamlit.session_state["USER_SCATTER_COLOR"] = "#53DD97"
         if "USER_SCATTER_COLOR_RGB" not in streamlit.session_state:
             streamlit.session_state["USER_SCATTER_COLOR_RGB"] = True
+        if "USER_MARKER_STYLE" not in streamlit.session_state:
+            streamlit.session_state["USER_MARKER_STYLE"] = MarkerShapeStyle.circle.value
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
@@ -177,6 +227,14 @@ class UserConfig:
         streamlit.session_state["USER_SCATTER_COLOR_RGB"] = new_value
 
     @property
+    def USER_MARKER_STYLE(self) -> MarkerShapeStyle:
+        return MarkerShapeStyle(streamlit.session_state["USER_MARKER_STYLE"])
+
+    @USER_MARKER_STYLE.setter
+    def USER_MARKER_STYLE(self, new_value: MarkerShapeStyle):
+        streamlit.session_state["USER_MARKER_STYLE"] = new_value.value
+
+    @property
     def color(self) -> RGBAColor:
         colorspace = self.USER_SOURCE_COLORSPACE
         if self.USER_SOURCE_FORCE_LINEAR:
@@ -233,7 +291,7 @@ class UserConfig:
             scatter_kwargs={
                 "s": self.USER_SCATTER_SIZE,
                 "c": "RGB" if self.USER_SCATTER_COLOR_RGB else self.USER_SCATTER_COLOR,
-                # "marker": "+",
+                "marker": self.USER_MARKER_STYLE.value,
                 # "zorder": 0,
             },
             # styling

@@ -3,6 +3,7 @@ import streamlit
 from streamlit_colourplotting import widgetify
 from streamlit_colourplotting.ui._config import SourceType
 from streamlit_colourplotting.ui._config import DiagramMethod
+from streamlit_colourplotting.ui._config import MarkerShapeStyle
 from streamlit_colourplotting.ui import config
 
 
@@ -76,6 +77,15 @@ def widget_scatter_color(key, force_update=False):
         return
 
     config().USER_SCATTER_COLOR = streamlit.session_state[key]
+
+
+@widgetify
+def widget_marker_style(key, force_update=False):
+    if key not in streamlit.session_state or force_update:
+        streamlit.session_state[key] = config().USER_MARKER_STYLE.value
+        return
+
+    config().USER_MARKER_STYLE = MarkerShapeStyle(streamlit.session_state[key])
 
 
 def create_sidebar():
@@ -153,3 +163,13 @@ def create_sidebar():
             key=str(widget_scatter_color),
             on_change=widget_scatter_color,
         )
+
+    widget_marker_style(force_update=True)
+    options = MarkerShapeStyle.labels()
+    streamlit.selectbox(
+        label="Marker Style",
+        options=options,
+        help="Style of the shape of the markers (scatter points).",
+        key=str(widget_marker_style),
+        on_change=widget_marker_style,
+    )
