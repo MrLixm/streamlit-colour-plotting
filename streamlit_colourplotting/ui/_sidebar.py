@@ -272,7 +272,7 @@ def create_sidebar():
                 label="RGB",
                 help="If checked, each scatter marker take the color it represent.",
                 key="markerUseRgb",
-                value=config().USER_SCATTER_COLOR_RGB.get(),
+                value=config().USER_SCATTER_COLOR_RGB.default,
             )
             config().USER_SCATTER_COLOR_RGB.set(marker_use_rgb)
 
@@ -281,7 +281,7 @@ def create_sidebar():
                 label="Marker Color",
                 label_visibility="collapsed",
                 disabled=marker_use_rgb,
-                value=config().USER_SCATTER_COLOR.get(),
+                value=config().USER_SCATTER_COLOR.default,
             )
             config().USER_SCATTER_COLOR.set(marker_color)
 
@@ -365,6 +365,6 @@ def create_sidebar():
         help="Only plot each pixel every N sample submitted.\n\n"
         "Higher number increase processing speed of larger images.",
         min_value=1,
-        value=config().USER_IMAGE_SAMPLES.get(),
+        value=config().USER_IMAGE_SAMPLES.default,
     )
     config().USER_IMAGE_SAMPLES.set(image_samples)
