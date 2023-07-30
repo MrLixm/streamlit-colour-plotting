@@ -196,7 +196,6 @@ def create_sidebar():
                 min_value=0.0,
                 max_value=1.0,
                 value=config().USER_SCATTER_ALPHA.default,
-                disabled=marker_use_rgb,
             )
             config().USER_SCATTER_ALPHA.set(marker_alpha)
 
