@@ -15,15 +15,6 @@ from streamlit_colourplotting.ui import config
 
 
 @widgetify
-def widget_show_diagram_background(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_DIAGRAM_SHOW_BACKGROUND.get()
-        return
-
-    config().USER_DIAGRAM_SHOW_BACKGROUND.set(streamlit.session_state[key])
-
-
-@widgetify
 def widget_rgb_locus(key, force_update=False):
     if key not in streamlit.session_state or force_update:
         streamlit.session_state[key] = config().USER_RGB_LOCUS.get()
@@ -175,12 +166,11 @@ def create_sidebar():
     )
     config().USER_DIAGRAM_METHOD.set(DiagramMethod(diagram_method))
 
-    widget_show_diagram_background(force_update=True)
-    streamlit.checkbox(
+    show_locus_background = streamlit.checkbox(
         label="Show RGB Locus Background",
-        key=str(widget_show_diagram_background),
-        on_change=widget_show_diagram_background,
+        value=config().USER_DIAGRAM_SHOW_BACKGROUND.default,
     )
+    config().USER_DIAGRAM_SHOW_BACKGROUND.set(show_locus_background)
 
     widget_rgb_locus(force_update=True)
     streamlit.checkbox(
