@@ -80,7 +80,7 @@ def create_style_edit_row(
     column1, column2, column3 = streamlit.columns([0.43, 0.12, 0.5])
 
     with column1:
-        streamlit.markdown(label)
+        streamlit.markdown(f"###### {label}")
 
     with column2:
         color = streamlit.color_picker(
@@ -247,7 +247,8 @@ def create_sidebar():
 
         color_background = create_style_edit_row("Background", "#1B1B1B00")
         style["figure.facecolor"] = color_background
-        style["axes.facecolor"] = color_background
+        color_background_axes = create_style_edit_row("Background Axes", "#1B1B1B00")
+        style["axes.facecolor"] = color_background_axes
         style["text.color"] = create_style_edit_row("Text", "#fefefeff")
         color_axes = create_style_edit_row("Axes", "#666666ff")
         style["axes.labelcolor"] = color_axes

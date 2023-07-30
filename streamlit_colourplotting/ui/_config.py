@@ -337,6 +337,7 @@ class UserConfig:
                 show_whitepoints=self.USER_SHOW_WHITEPOINT.get(),
                 show_pointer_gamut=self.USER_PLOT_POINTER_GAMUT.get(),
                 pointer_gamut_opacity=self.USER_POINTER_GAMUT_ALPHA.get(),
+                transparent_background=False,
                 standalone=False,
                 **plot_settings,
             )
