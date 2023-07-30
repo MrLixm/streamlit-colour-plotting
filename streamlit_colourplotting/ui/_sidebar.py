@@ -1,4 +1,11 @@
+import random
+from typing import Optional
+from typing import Union
+
+import cocoon
 import streamlit
+from cocoon import get_available_colorspaces
+from cocoon import get_colorspace
 
 from streamlit_colourplotting import widgetify
 from streamlit_colourplotting.ui._config import SourceType
@@ -115,6 +122,56 @@ def widget_image_samples(key, force_update=False):
         return
 
     config().USER_IMAGE_SAMPLES = streamlit.session_state[key]
+
+
+def create_colorspace_row(
+    identifier: int,
+    initial_color: str,
+) -> tuple[Optional[str], str]:
+    """
+    Create widgets to select a colorspace to display in the diagram.
+
+    Args:
+        identifier: number starting from 1
+        initial_color: default color used for the colorspace in the diagram
+
+    Returns:
+        colorspace instance to display , associated hexadecimal color
+    """
+    column1, column2, column3 = streamlit.columns([0.08, 0.80, 0.12])
+
+    with column1:
+        use_colorspace = streamlit.checkbox(
+            label=f"Use Colorspace {identifier}",
+            value=identifier == 1,
+            label_visibility="collapsed",
+            disabled=identifier == 1,
+        )
+
+    with column2:
+        if identifier == 1:
+            streamlit.markdown("Source Colorspace")
+        else:
+            options = [colorspace.name for colorspace in get_available_colorspaces()]
+            colorspace_name = streamlit.selectbox(
+                label=f"Colorspace {identifier}",
+                options=options,
+                label_visibility="collapsed",
+            )
+
+    with column3:
+        color = streamlit.color_picker(
+            label=f"{identifier} Color",
+            label_visibility="collapsed",
+            value=initial_color,
+        )
+
+    if identifier == 1:
+        return config().SOURCE_COLORSPACE_TOKEN, color
+
+    if use_colorspace:
+        return colorspace_name, color
+    return None, "#000000"
 
 
 def create_style_edit_row(
@@ -275,6 +332,20 @@ def create_sidebar():
         key=str(widget_image_samples),
         on_change=widget_image_samples,
     )
+
+    with streamlit.expander("Colorspaces"):
+        colorspace1 = create_colorspace_row(1, "#F44336")
+        colorspace2 = create_colorspace_row(2, "#9C27B0")
+        colorspace3 = create_colorspace_row(3, "#3F51B5")
+        colorspace4 = create_colorspace_row(4, "#03A9F4")
+        colorspace5 = create_colorspace_row(5, "#009688")
+        config().USER_FIGURE_COLORSPACES = [
+            colorspace1,
+            colorspace2,
+            colorspace3,
+            colorspace4,
+            colorspace5,
+        ]
 
     with streamlit.expander("Theming"):
         figure_size = streamlit.slider(

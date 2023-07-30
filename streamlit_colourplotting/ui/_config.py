@@ -1,7 +1,9 @@
 import enum
 import io
 from typing import Optional
+from typing import Union
 
+import cocoon
 import colour
 import matplotlib.style
 import matplotlib.pyplot
@@ -91,6 +93,8 @@ class MarkerShapeStyle(UifiedEnum):
 
 
 class UserConfig:
+    SOURCE_COLORSPACE_TOKEN = "$SOURCE_COLORSPACE$"
+
     def __init__(self):
         # note: session_state doesn't work well with Enums
 
@@ -133,6 +137,10 @@ class UserConfig:
             streamlit.session_state["USER_IMAGE_SAMPLES"] = 10
         if "USER_STYLE" not in streamlit.session_state:
             streamlit.session_state["USER_STYLE"] = {}
+        if "USER_FIGURE_COLORSPACES" not in streamlit.session_state:
+            streamlit.session_state["USER_FIGURE_COLORSPACES"] = [
+                (self.SOURCE_COLORSPACE_TOKEN, "#F44336")
+            ]
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
@@ -287,11 +295,51 @@ class UserConfig:
         streamlit.session_state["USER_STYLE"] = new_value
 
     @property
+    def USER_FIGURE_COLORSPACES(self) -> list[Optional[str], str]:
+        return streamlit.session_state["USER_FIGURE_COLORSPACES"]
+
+    @USER_FIGURE_COLORSPACES.setter
+    def USER_FIGURE_COLORSPACES(self, new_value: list[Optional[str], str]):
+        streamlit.session_state["USER_FIGURE_COLORSPACES"] = new_value
+
+    @property
+    def _source_colorspace(self) -> cocoon.RgbColorspace:
+        colorspace = self.USER_SOURCE_COLORSPACE
+
+        if self.USER_SOURCE_FORCE_LINEAR:
+            colorspace = self.USER_SOURCE_COLORSPACE.as_linear_copy()
+
+        return colorspace
+
+    @property
+    def _figure_colorspaces(self) -> dict[colour.RGB_Colourspace, str]:
+        figure_colorspaces = {}
+        _figure_colorspaces = self.USER_FIGURE_COLORSPACES
+
+        for colorspace_name, color in _figure_colorspaces:
+            if colorspace_name == self.SOURCE_COLORSPACE_TOKEN:
+                colorspace = self._source_colorspace.as_colour_colorspace()
+
+            elif colorspace_name is None:
+                continue
+
+            else:
+                colorspace = cocoon.get_colorspace(colorspace_name)
+                colorspace = colorspace.as_colour_colorspace()
+
+            figure_colorspaces[colorspace] = color
+
+        return figure_colorspaces
+
+    @property
     def color(self) -> RGBAColor:
         colorspace = self.USER_SOURCE_COLORSPACE
+        color = self.USER_SOURCE_COLOR.as_colorspace(colorspace)
+
         if self.USER_SOURCE_FORCE_LINEAR:
             colorspace = colorspace.as_linear_copy()
-        color = self.USER_SOURCE_COLOR.as_colorspace(colorspace)
+            color = color.as_colorspace(colorspace)
+
         return color
 
     @property
@@ -305,26 +353,28 @@ class UserConfig:
             return image
 
         elif self.USER_SOURCE_TYPE == SourceType.image:
+            samples = self.USER_IMAGE_SAMPLES
             image = self.USER_IMAGE
+            source_colorspace = self._source_colorspace
+
             if image is None:
                 return numpy.full([2, 2, 3], [0.0, 0.0, 0.0])
+
+            if image.shape[0] > samples or image.shape[1] > samples:
+                image = image[::samples, ::samples, ...]
+
+            # NOTE: colour plotting function expect linear encoding
+            if not source_colorspace.transfer_functions.is_decoding_linear:
+                image = source_colorspace.transfer_functions.decoding(image)
+
             return image
 
     @property
     def plot(self) -> tuple[matplotlib.pyplot.Figure, matplotlib.pyplot.Axes]:
-        samples = self.USER_IMAGE_SAMPLES
         image = self.image
-
-        if image.shape[0] > samples or image.shape[1] > samples:
-            image: numpy.ndarray = image[::samples, ::samples, ...]
-
-        colorspace = self.USER_SOURCE_COLORSPACE
-        if self.USER_SOURCE_FORCE_LINEAR:
-            colorspace = self.USER_SOURCE_COLORSPACE.as_linear_copy()
-
+        colorspace = self._source_colorspace
         colour_colorspace = colorspace.as_colour_colorspace()
-        # NOTE: colour plotting function does not use the usual apply_cctf_decoding=True
-        image = colour_colorspace.cctf_decoding(image)
+        figure_colorspaces = self._figure_colorspaces
 
         if self.USER_DIAGRAM_METHOD == DiagramMethod.cie1931:
             plot_RGB_chromaticities_function = (
@@ -341,6 +391,17 @@ class UserConfig:
         else:
             raise ValueError(f"Unsupported diagram method {self.USER_DIAGRAM_METHOD}")
 
+        plot_settings = {}
+        if figure_colorspaces:
+            colors = list(figure_colorspaces.values())
+            if len(colors) == 1:
+                # ensure the list is always of len 2 at minimum
+                colors.append("#000000")
+            color_map = matplotlib.colors.LinearSegmentedColormap.from_list(
+                "user", colors
+            )
+            plot_settings["colour_cycle_map"] = color_map
+
         marker_color = "RGB" if self.USER_SCATTER_COLOR_RGB else self.USER_SCATTER_COLOR
         with matplotlib.style.context(self.USER_STYLE):
             (
@@ -349,7 +410,7 @@ class UserConfig:
             ) = plot_RGB_chromaticities_function(
                 image,
                 colourspace=colour_colorspace,
-                colourspaces=[colour_colorspace],
+                colourspaces=list(figure_colorspaces.keys()),
                 scatter_kwargs={
                     "s": self.USER_SCATTER_SIZE,
                     "c": marker_color,
@@ -363,6 +424,7 @@ class UserConfig:
                 show_pointer_gamut=self.USER_PLOT_POINTER_GAMUT,
                 pointer_gamut_opacity=self.USER_POINTER_GAMUT_ALPHA,
                 standalone=False,
+                **plot_settings,
             )
         return figure, axes
 
