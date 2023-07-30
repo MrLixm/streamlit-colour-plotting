@@ -44,15 +44,6 @@ def widget_rgb_locus(key, force_update=False):
 
 
 @widgetify
-def widget_transparent_background(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_TRANSPARENT_BACKGROUND
-        return
-
-    config().USER_TRANSPARENT_BACKGROUND = streamlit.session_state[key]
-
-
-@widgetify
 def widget_scatter_size(key, force_update=False):
     if key not in streamlit.session_state or force_update:
         streamlit.session_state[key] = config().USER_SCATTER_SIZE
@@ -225,13 +216,6 @@ def create_sidebar():
         label="Use RGB Locus Border",
         key=str(widget_rgb_locus),
         on_change=widget_rgb_locus,
-    )
-
-    widget_transparent_background(force_update=True)
-    streamlit.checkbox(
-        label="Use Transparent Background",
-        key=str(widget_transparent_background),
-        on_change=widget_transparent_background,
     )
 
     widget_show_whitepoint(force_update=True)

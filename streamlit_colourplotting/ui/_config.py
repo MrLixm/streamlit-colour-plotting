@@ -102,8 +102,6 @@ class UserConfig:
             streamlit.session_state["USER_DIAGRAM_SHOW_BACKGROUND"] = False
         if "USER_RGB_LOCUS" not in streamlit.session_state:
             streamlit.session_state["USER_RGB_LOCUS"] = True
-        if "USER_TRANSPARENT_BACKGROUND" not in streamlit.session_state:
-            streamlit.session_state["USER_TRANSPARENT_BACKGROUND"] = False
         if "USER_SOURCE_COLOR" not in streamlit.session_state:
             streamlit.session_state["USER_SOURCE_COLOR"] = RGBAColor(0.0, 0.0, 0.0)
         if "USER_SOURCE_COLORSPACE" not in streamlit.session_state:
@@ -171,14 +169,6 @@ class UserConfig:
     @USER_RGB_LOCUS.setter
     def USER_RGB_LOCUS(self, new_value: bool):
         streamlit.session_state["USER_RGB_LOCUS"] = new_value
-
-    @property
-    def USER_TRANSPARENT_BACKGROUND(self) -> bool:
-        return streamlit.session_state["USER_TRANSPARENT_BACKGROUND"]
-
-    @USER_TRANSPARENT_BACKGROUND.setter
-    def USER_TRANSPARENT_BACKGROUND(self, new_value: bool):
-        streamlit.session_state["USER_TRANSPARENT_BACKGROUND"] = new_value
 
     @property
     def USER_SOURCE_COLOR(self) -> RGBAColor:
@@ -397,7 +387,6 @@ class UserConfig:
                 show_whitepoints=self.USER_SHOW_WHITEPOINT,
                 show_pointer_gamut=self.USER_PLOT_POINTER_GAMUT,
                 pointer_gamut_opacity=self.USER_POINTER_GAMUT_ALPHA,
-                transparent_background=self.USER_TRANSPARENT_BACKGROUND,
                 standalone=False,
             )
         return figure, axes
