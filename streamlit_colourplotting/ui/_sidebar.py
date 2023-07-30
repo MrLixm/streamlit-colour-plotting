@@ -117,25 +117,6 @@ def widget_image_samples(key, force_update=False):
     config().USER_IMAGE_SAMPLES = streamlit.session_state[key]
 
 
-@widgetify
-def widget_figure_size(key, force_update=False):
-    # NOTE: conversion of inch (pyplot) to centimeters (gui)
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_FIGURE_SIZE * 2.54
-        return
-
-    config().USER_FIGURE_SIZE = streamlit.session_state[key] / 2.54
-
-
-@widgetify
-def widget_figure_font_size(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_FIGURE_FONT_SIZE
-        return
-
-    config().USER_FIGURE_FONT_SIZE = streamlit.session_state[key]
-
-
 def create_style_edit_row(
     label: str,
     initial_value: str,
@@ -285,25 +266,6 @@ def create_sidebar():
             on_change=widget_marker_style,
         )
 
-    widget_figure_size(force_update=True)
-    streamlit.slider(
-        label="Figure Size",
-        min_value=1.0,
-        max_value=50.0,
-        help="Size of the diagram in cm.",
-        key=str(widget_figure_size),
-        on_change=widget_figure_size,
-    )
-
-    widget_figure_font_size(force_update=True)
-    streamlit.slider(
-        label="Font Size",
-        min_value=1.0,
-        max_value=50.0,
-        key=str(widget_figure_font_size),
-        on_change=widget_figure_font_size,
-    )
-
     widget_image_samples(force_update=True)
     streamlit.number_input(
         label="Image Samples",
@@ -315,6 +277,24 @@ def create_sidebar():
     )
 
     with streamlit.expander("Theming"):
+        figure_size = streamlit.slider(
+            label="Figure Size",
+            min_value=1.0,
+            max_value=50.0,
+            value=25.0,
+            help="Size of the diagram in cm.",
+        )
+        # convert cm to inches for matplotlib
+        config().USER_STYLE["figure.figsize"] = (figure_size / 2.54, figure_size / 2.54)
+
+        font_size = streamlit.slider(
+            label="Font Size",
+            min_value=1.0,
+            max_value=50.0,
+            value=12.0,
+        )
+        config().USER_STYLE["font.size"] = font_size
+
         color_background = create_style_edit_row("Background", "#1B1B1B00")
         config().USER_STYLE["figure.facecolor"] = color_background
         config().USER_STYLE["axes.facecolor"] = color_background
