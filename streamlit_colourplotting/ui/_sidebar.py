@@ -7,20 +7,10 @@ import streamlit
 from cocoon import get_available_colorspaces
 from cocoon import get_colorspace
 
-from streamlit_colourplotting import widgetify
 from streamlit_colourplotting.ui._config import SourceType
 from streamlit_colourplotting.ui._config import DiagramMethod
 from streamlit_colourplotting.ui._config import MarkerShapeStyle
 from streamlit_colourplotting.ui import config
-
-
-@widgetify
-def widget_pointer_gamut_alpha(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_POINTER_GAMUT_ALPHA.get()
-        return
-
-    config().USER_POINTER_GAMUT_ALPHA.set(streamlit.session_state[key])
 
 
 def create_colorspace_row(
@@ -163,15 +153,14 @@ def create_sidebar():
     )
     config().USER_PLOT_POINTER_GAMUT.set(show_pointer_gamut)
 
-    widget_pointer_gamut_alpha(force_update=True)
     if show_pointer_gamut:
-        streamlit.slider(
+        pointer_gamut_alpha = streamlit.slider(
             label="Pointer's Gamut Opacity",
             min_value=0.0,
             max_value=1.0,
-            key=str(widget_pointer_gamut_alpha),
-            on_change=widget_pointer_gamut_alpha,
+            value=config().USER_POINTER_GAMUT_ALPHA.default,
         )
+        config().USER_POINTER_GAMUT_ALPHA.set(pointer_gamut_alpha)
 
     with streamlit.expander("Markers Styling"):
         marker_size = streamlit.slider(
