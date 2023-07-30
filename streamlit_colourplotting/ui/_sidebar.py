@@ -15,15 +15,6 @@ from streamlit_colourplotting.ui import config
 
 
 @widgetify
-def widget_diagram_method(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_DIAGRAM_METHOD.get().value
-        return
-
-    config().USER_DIAGRAM_METHOD.set(DiagramMethod(streamlit.session_state[key]))
-
-
-@widgetify
 def widget_show_diagram_background(key, force_update=False):
     if key not in streamlit.session_state or force_update:
         streamlit.session_state[key] = config().USER_DIAGRAM_SHOW_BACKGROUND.get()
@@ -175,15 +166,14 @@ def create_sidebar():
     )
     config().USER_SOURCE_TYPE.set(SourceType(source_type))
 
-    widget_diagram_method(force_update=True)
     options = DiagramMethod.labels()
-    streamlit.selectbox(
+    diagram_method = streamlit.selectbox(
         label="Diagram Method",
         options=options,
         help="Choose which model to use for the chromaticity diagram.",
-        key=str(widget_diagram_method),
-        on_change=widget_diagram_method,
+        index=options.index(config().USER_DIAGRAM_METHOD.default.value),
     )
+    config().USER_DIAGRAM_METHOD.set(DiagramMethod(diagram_method))
 
     widget_show_diagram_background(force_update=True)
     streamlit.checkbox(
