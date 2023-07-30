@@ -285,6 +285,17 @@ def create_sidebar():
             )
             config().USER_SCATTER_COLOR.set(marker_color)
 
+        with column3:
+            marker_alpha = streamlit.number_input(
+                label="Marker Alpha",
+                label_visibility="collapsed",
+                min_value=0.0,
+                max_value=1.0,
+                value=config().USER_SCATTER_ALPHA.default,
+                disabled=marker_use_rgb,
+            )
+            config().USER_SCATTER_ALPHA.set(marker_alpha)
+
         widget_marker_style(force_update=True)
         options = MarkerShapeStyle.labels()
         streamlit.selectbox(

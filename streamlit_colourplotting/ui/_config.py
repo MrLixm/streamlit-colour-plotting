@@ -173,6 +173,10 @@ class UserConfig:
         True,
         "USER_SCATTER_COLOR_RGB",
     )
+    USER_SCATTER_ALPHA = UserConfigOption(
+        0.85,
+        "USER_SCATTER_ALPHA",
+    )
     USER_MARKER_STYLE = UserConfigOption(
         MarkerShapeStyle.circle,
         "USER_MARKER_STYLE",
@@ -323,6 +327,7 @@ class UserConfig:
                 scatter_kwargs={
                     "s": self.USER_SCATTER_SIZE.get(),
                     "c": marker_color,
+                    "alpha": self.USER_SCATTER_ALPHA.get(),
                     "marker": self.USER_MARKER_STYLE.get().as_core(),
                     "zorder": 0,
                 },
