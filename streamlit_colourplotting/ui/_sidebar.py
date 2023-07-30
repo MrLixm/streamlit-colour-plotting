@@ -15,15 +15,6 @@ from streamlit_colourplotting.ui import config
 
 
 @widgetify
-def widget_rgb_locus(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_RGB_LOCUS.get()
-        return
-
-    config().USER_RGB_LOCUS.set(streamlit.session_state[key])
-
-
-@widgetify
 def widget_plot_pointer_gamut(key, force_update=False):
     if key not in streamlit.session_state or force_update:
         streamlit.session_state[key] = config().USER_PLOT_POINTER_GAMUT.get()
@@ -172,12 +163,11 @@ def create_sidebar():
     )
     config().USER_DIAGRAM_SHOW_BACKGROUND.set(show_locus_background)
 
-    widget_rgb_locus(force_update=True)
-    streamlit.checkbox(
+    use_rgb_locus = streamlit.checkbox(
         label="Use RGB Locus Border",
-        key=str(widget_rgb_locus),
-        on_change=widget_rgb_locus,
+        value=config().USER_RGB_LOCUS.default,
     )
+    config().USER_RGB_LOCUS.set(use_rgb_locus)
 
     widget_show_whitepoint(force_update=True)
     streamlit.checkbox(
