@@ -32,15 +32,6 @@ def widget_pointer_gamut_alpha(key, force_update=False):
     config().USER_POINTER_GAMUT_ALPHA.set(streamlit.session_state[key])
 
 
-@widgetify
-def widget_show_whitepoint(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_SHOW_WHITEPOINT.get()
-        return
-
-    config().USER_SHOW_WHITEPOINT.set(streamlit.session_state[key])
-
-
 def create_colorspace_row(
     identifier: int,
     initial_color: str,
@@ -169,12 +160,11 @@ def create_sidebar():
     )
     config().USER_RGB_LOCUS.set(use_rgb_locus)
 
-    widget_show_whitepoint(force_update=True)
-    streamlit.checkbox(
+    show_whitepoints = streamlit.checkbox(
         label="Show Whitepoints",
-        key=str(widget_show_whitepoint),
-        on_change=widget_show_whitepoint,
+        value=config().USER_SHOW_WHITEPOINT.default,
     )
+    config().USER_SHOW_WHITEPOINT.set(show_whitepoints)
 
     widget_plot_pointer_gamut(force_update=True)
     show_pointer_gamut = streamlit.checkbox(
