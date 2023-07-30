@@ -1,11 +1,7 @@
-import random
 from typing import Optional
-from typing import Union
 
-import cocoon
 import streamlit
 from cocoon import get_available_colorspaces
-from cocoon import get_colorspace
 
 from streamlit_colourplotting.ui._config import SourceType
 from streamlit_colourplotting.ui._config import DiagramMethod
