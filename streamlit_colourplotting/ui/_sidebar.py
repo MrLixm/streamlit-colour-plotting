@@ -15,15 +15,6 @@ from streamlit_colourplotting.ui import config
 
 
 @widgetify
-def widget_source_type(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_SOURCE_TYPE.get().value
-        return
-
-    config().USER_SOURCE_TYPE.set(SourceType(streamlit.session_state[key]))
-
-
-@widgetify
 def widget_diagram_method(key, force_update=False):
     if key not in streamlit.session_state or force_update:
         streamlit.session_state[key] = config().USER_DIAGRAM_METHOD.get().value
@@ -175,15 +166,14 @@ def create_style_edit_row(
 def create_sidebar():
     streamlit.title("Options".upper())
 
-    widget_source_type(force_update=True)
     options = SourceType.labels()
-    streamlit.selectbox(
+    source_type = streamlit.selectbox(
         label="Source",
         options=options,
         help="Choose which data type you want to plot.",
-        key=str(widget_source_type),
-        on_change=widget_source_type,
+        index=options.index(config().USER_SOURCE_TYPE.default.value),
     )
+    config().USER_SOURCE_TYPE.set(SourceType(source_type))
 
     widget_diagram_method(force_update=True)
     options = DiagramMethod.labels()
