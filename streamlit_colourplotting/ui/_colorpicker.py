@@ -18,44 +18,46 @@ from ._colorspacepicker import create_colorspace_picker
 def widget_color_format(key, force_update=False):
     if key not in streamlit.session_state or force_update:
         # warning the default value should not be hexadecimal !
-        streamlit.session_state[key] = config().USER_SOURCE_COLOR_FORMAT.value
+        streamlit.session_state[key] = config().USER_SOURCE_COLOR_FORMAT.get().value
         return
 
     user_value = streamlit.session_state[key]
     value = ColorStringFormat(user_value)
 
-    config().USER_SOURCE_COLOR_FORMAT = value
+    config().USER_SOURCE_COLOR_FORMAT.set(value)
     widget_color_source(force_update=True)
 
     # we assume hexadecimal color are always encoded as "display sRGB"
     if value == value.hex:
-        config().USER_SOURCE_COLORSPACE = sRGB_COLORSPACE
-        config().USER_SOURCE_FORCE_LINEAR = False
+        config().USER_SOURCE_COLORSPACE.set(sRGB_COLORSPACE)
+        config().USER_SOURCE_FORCE_LINEAR.set(False)
 
 
 @widgetify
 def widget_color_source(key, force_update=False):
     if key not in streamlit.session_state or force_update:
         streamlit.session_state[key] = convert_color_to_str(
-            config().USER_SOURCE_COLOR,
-            config().USER_SOURCE_COLOR_FORMAT,
+            config().USER_SOURCE_COLOR.get(),
+            config().USER_SOURCE_COLOR_FORMAT.get(),
         )
         return
 
     user_value = streamlit.session_state[key]
-    validated = validate_color_str(user_value, config().USER_SOURCE_COLOR_FORMAT)
+    validated = validate_color_str(user_value, config().USER_SOURCE_COLOR_FORMAT.get())
 
     if validated == validated.invalid:
-        user_issues = config().USER_SOURCE_ERROR
-        config().USER_SOURCE_ERROR = user_issues | user_issues.value_error
+        user_issues = config().USER_SOURCE_ERROR.get()
+        config().USER_SOURCE_ERROR.set(user_issues | user_issues.value_error)
         del streamlit.session_state[key]
         return
 
-    safe_user_value = fix_color_str(user_value, config().USER_SOURCE_COLOR_FORMAT)
-    color = convert_str_to_color(safe_user_value, config().USER_SOURCE_COLOR_FORMAT)
+    safe_user_value = fix_color_str(user_value, config().USER_SOURCE_COLOR_FORMAT.get())
+    color = convert_str_to_color(
+        safe_user_value, config().USER_SOURCE_COLOR_FORMAT.get()
+    )
 
     streamlit.session_state[key] = safe_user_value
-    config().USER_SOURCE_COLOR = color
+    config().USER_SOURCE_COLOR.set(color)
 
 
 def create_color_preview():

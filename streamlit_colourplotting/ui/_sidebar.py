@@ -17,102 +17,84 @@ from streamlit_colourplotting.ui import config
 @widgetify
 def widget_source_type(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_SOURCE_TYPE.value
+        streamlit.session_state[key] = config().USER_SOURCE_TYPE.get().value
         return
 
-    config().USER_SOURCE_TYPE = SourceType(streamlit.session_state[key])
+    config().USER_SOURCE_TYPE.set(SourceType(streamlit.session_state[key]))
 
 
 @widgetify
 def widget_diagram_method(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_DIAGRAM_METHOD.value
+        streamlit.session_state[key] = config().USER_DIAGRAM_METHOD.get().value
         return
 
-    config().USER_DIAGRAM_METHOD = DiagramMethod(streamlit.session_state[key])
+    config().USER_DIAGRAM_METHOD.set(DiagramMethod(streamlit.session_state[key]))
 
 
 @widgetify
 def widget_show_diagram_background(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_DIAGRAM_SHOW_BACKGROUND
+        streamlit.session_state[key] = config().USER_DIAGRAM_SHOW_BACKGROUND.get()
         return
 
-    config().USER_DIAGRAM_SHOW_BACKGROUND = streamlit.session_state[key]
+    config().USER_DIAGRAM_SHOW_BACKGROUND.set(streamlit.session_state[key])
 
 
 @widgetify
 def widget_rgb_locus(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_RGB_LOCUS
+        streamlit.session_state[key] = config().USER_RGB_LOCUS.get()
         return
 
-    config().USER_RGB_LOCUS = streamlit.session_state[key]
+    config().USER_RGB_LOCUS.set(streamlit.session_state[key])
 
 
 @widgetify
 def widget_scatter_size(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_SCATTER_SIZE
+        streamlit.session_state[key] = config().USER_SCATTER_SIZE.get()
         return
 
-    config().USER_SCATTER_SIZE = streamlit.session_state[key]
-
-
-@widgetify
-def widget_scatter_color_rgb(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_SCATTER_COLOR_RGB
-        return
-
-    config().USER_SCATTER_COLOR_RGB = streamlit.session_state[key]
-
-
-@widgetify
-def widget_scatter_color(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_SCATTER_COLOR
-        return
-
-    config().USER_SCATTER_COLOR = streamlit.session_state[key]
+    config().USER_SCATTER_SIZE.set(streamlit.session_state[key])
 
 
 @widgetify
 def widget_marker_style(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_MARKER_STYLE.as_label()
+        streamlit.session_state[key] = config().USER_MARKER_STYLE.get().as_label()
         return
 
-    config().USER_MARKER_STYLE = MarkerShapeStyle.from_label(
-        streamlit.session_state[key]
+    config().USER_MARKER_STYLE.set(
+        MarkerShapeStyle.from_label(streamlit.session_state[key])
     )
 
 
 @widgetify
 def widget_plot_pointer_gamut(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_PLOT_POINTER_GAMUT
+        streamlit.session_state[key] = config().USER_PLOT_POINTER_GAMUT.get()
         return
 
-    config().USER_PLOT_POINTER_GAMUT = streamlit.session_state[key]
+    config().USER_PLOT_POINTER_GAMUT.set(streamlit.session_state[key])
 
 
 @widgetify
 def widget_pointer_gamut_alpha(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_POINTER_GAMUT_ALPHA
+        streamlit.session_state[key] = config().USER_POINTER_GAMUT_ALPHA.get()
         return
 
-    config().USER_POINTER_GAMUT_ALPHA = streamlit.session_state[key]
+    config().USER_POINTER_GAMUT_ALPHA.set(streamlit.session_state[key])
 
 
 @widgetify
 def widget_show_whitepoint(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_SHOW_WHITEPOINT
+        streamlit.session_state[key] = config().USER_SHOW_WHITEPOINT.get()
         return
 
-    config().USER_SHOW_WHITEPOINT = streamlit.session_state[key]
+    config().USER_SHOW_WHITEPOINT.set(streamlit.session_state[key])
 
 
 def create_colorspace_row(
@@ -283,26 +265,25 @@ def create_sidebar():
 
         streamlit.markdown("###### Marker Color")
 
-        column1, column2 = streamlit.columns([0.15, 0.85])
-
-        with column2:
-            widget_scatter_color_rgb(force_update=True)
-            use_rgb = streamlit.checkbox(
-                label="Use RGB",
-                key=str(widget_scatter_color_rgb),
-                on_change=widget_scatter_color_rgb,
-                help="If checked, each scatter marker take the color it represent.",
-            )
+        column1, column2, column3 = streamlit.columns([0.43, 0.12, 0.45])
 
         with column1:
-            widget_scatter_color(force_update=True)
-            streamlit.color_picker(
+            marker_use_rgb = streamlit.checkbox(
+                label="RGB",
+                help="If checked, each scatter marker take the color it represent.",
+                key="markerUseRgb",
+                value=config().USER_SCATTER_COLOR_RGB.get(),
+            )
+            config().USER_SCATTER_COLOR_RGB.set(marker_use_rgb)
+
+        with column2:
+            marker_color = streamlit.color_picker(
                 label="Marker Color",
                 label_visibility="collapsed",
-                disabled=use_rgb,
-                key=str(widget_scatter_color),
-                on_change=widget_scatter_color,
+                disabled=marker_use_rgb,
+                value=config().USER_SCATTER_COLOR.get(),
             )
+            config().USER_SCATTER_COLOR.set(marker_color)
 
         widget_marker_style(force_update=True)
         options = MarkerShapeStyle.labels()
@@ -320,15 +301,19 @@ def create_sidebar():
         colorspace3 = create_colorspace_row(3, "#3F51B5")
         colorspace4 = create_colorspace_row(4, "#03A9F4")
         colorspace5 = create_colorspace_row(5, "#009688")
-        config().USER_FIGURE_COLORSPACES = [
-            colorspace1,
-            colorspace2,
-            colorspace3,
-            colorspace4,
-            colorspace5,
-        ]
+        config().USER_FIGURE_COLORSPACES.set(
+            [
+                colorspace1,
+                colorspace2,
+                colorspace3,
+                colorspace4,
+                colorspace5,
+            ]
+        )
 
     with streamlit.expander("Theming"):
+        style = config().USER_STYLE.get()
+
         figure_size = streamlit.slider(
             label="Figure Size",
             min_value=1.0,
@@ -337,7 +322,7 @@ def create_sidebar():
             help="Size of the diagram in cm.",
         )
         # convert cm to inches for matplotlib
-        config().USER_STYLE["figure.figsize"] = (figure_size / 2.54, figure_size / 2.54)
+        style["figure.figsize"] = (figure_size / 2.54, figure_size / 2.54)
 
         font_size = streamlit.slider(
             label="Font Size",
@@ -345,31 +330,30 @@ def create_sidebar():
             max_value=50.0,
             value=12.0,
         )
-        config().USER_STYLE["font.size"] = font_size
+        style["font.size"] = font_size
 
         color_background = create_style_edit_row("Background", "#1B1B1B00")
-        config().USER_STYLE["figure.facecolor"] = color_background
-        config().USER_STYLE["axes.facecolor"] = color_background
-        config().USER_STYLE["text.color"] = create_style_edit_row("Text", "#fefefeff")
+        style["figure.facecolor"] = color_background
+        style["axes.facecolor"] = color_background
+        style["text.color"] = create_style_edit_row("Text", "#fefefeff")
         color_axes = create_style_edit_row("Axes", "#666666ff")
-        config().USER_STYLE["axes.labelcolor"] = color_axes
-        config().USER_STYLE["xtick.color"] = color_axes
-        config().USER_STYLE["ytick.color"] = color_axes
-        config().USER_STYLE["axes.edgecolor"] = color_axes
-        config().USER_STYLE["legend.facecolor"] = create_style_edit_row(
-            "Legend", "#363636ff"
-        )
-        config().USER_STYLE["legend.edgecolor"] = create_style_edit_row(
+        style["axes.labelcolor"] = color_axes
+        style["xtick.color"] = color_axes
+        style["ytick.color"] = color_axes
+        style["axes.edgecolor"] = color_axes
+        style["legend.facecolor"] = create_style_edit_row("Legend", "#363636ff")
+        style["legend.edgecolor"] = create_style_edit_row(
             "Legend Border",
             "#36363600",
             show_alpha=False,
         )
+        config().USER_STYLE.set(style)
 
     image_samples = streamlit.number_input(
         label="Image Samples",
         help="Only plot each pixel every N sample submitted.\n\n"
         "Higher number increase processing speed of larger images.",
         min_value=1,
-        value=config().USER_IMAGE_SAMPLES,
+        value=config().USER_IMAGE_SAMPLES.get(),
     )
-    config().USER_IMAGE_SAMPLES = image_samples
+    config().USER_IMAGE_SAMPLES.set(image_samples)

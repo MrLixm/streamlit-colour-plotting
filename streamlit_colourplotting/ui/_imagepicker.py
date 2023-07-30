@@ -53,4 +53,4 @@ def create_image_picker():
                 f"Image loaded as <{image_array.dtype} array {image_array.shape}>"
             )
 
-    config().USER_IMAGE = image_array
+    config().USER_IMAGE.set(image_array)

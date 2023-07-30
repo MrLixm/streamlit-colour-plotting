@@ -11,7 +11,7 @@ def create_issue_warning():
     """
     Create a widget to display warnings the user might have generated.
     """
-    issues = config().USER_SOURCE_ERROR
+    issues = config().USER_SOURCE_ERROR.get()
     message = ""
 
     if issues == issues.unset:
@@ -29,7 +29,7 @@ def create_issue_warning():
     streamlit.warning(message)
 
     # clear all error so the message is not displayed on next refresh
-    config().USER_SOURCE_ERROR = issues.unset
+    config().USER_SOURCE_ERROR.set(issues.unset)
 
 
 def create_body_source():
@@ -37,9 +37,9 @@ def create_body_source():
 
     create_issue_warning()
 
-    if config().USER_SOURCE_TYPE == config().USER_SOURCE_TYPE.color:
+    if config().USER_SOURCE_TYPE.get() == config().USER_SOURCE_TYPE.get().color:
         create_color_picker()
-    elif config().USER_SOURCE_TYPE == config().USER_SOURCE_TYPE.image:
+    elif config().USER_SOURCE_TYPE.get() == config().USER_SOURCE_TYPE.get().image:
         create_image_picker()
 
     streamlit.divider()

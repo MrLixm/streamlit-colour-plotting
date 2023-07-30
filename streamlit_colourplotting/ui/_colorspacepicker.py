@@ -12,40 +12,40 @@ from streamlit_colourplotting import widgetify
 @widgetify
 def widget_colorspace(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_SOURCE_COLORSPACE.name
+        streamlit.session_state[key] = config().USER_SOURCE_COLORSPACE.get().name
         return
 
     user_value = streamlit.session_state[key]
     colorspace = get_colorspace(user_value)
-    color_format = config().USER_SOURCE_COLOR_FORMAT
+    color_format = config().USER_SOURCE_COLOR_FORMAT.get()
 
     if color_format == color_format.hex and colorspace != sRGB_COLORSPACE:
-        user_issues = config().USER_SOURCE_ERROR
-        config().USER_SOURCE_ERROR = user_issues | user_issues.hex_colorspace
+        user_issues = config().USER_SOURCE_ERROR.get()
+        config().USER_SOURCE_ERROR.set(user_issues | user_issues.hex_colorspace)
         # reset to previously stored
-        streamlit.session_state[key] = config().USER_SOURCE_COLORSPACE.name
+        streamlit.session_state[key] = config().USER_SOURCE_COLORSPACE.get().name
         return
 
-    config().USER_SOURCE_COLORSPACE = colorspace
+    config().USER_SOURCE_COLORSPACE.set(colorspace)
 
 
 @widgetify
 def widget_force_linear(key, force_update=False):
     if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_SOURCE_FORCE_LINEAR
+        streamlit.session_state[key] = config().USER_SOURCE_FORCE_LINEAR.get()
         return
 
     force_linear = streamlit.session_state[key]
-    color_format = config().USER_SOURCE_COLOR_FORMAT
+    color_format = config().USER_SOURCE_COLOR_FORMAT.get()
 
     if color_format == color_format.hex and force_linear:
-        user_issues = config().USER_SOURCE_ERROR
-        config().USER_SOURCE_ERROR = user_issues | user_issues.hex_force_linear
+        user_issues = config().USER_SOURCE_ERROR.get()
+        config().USER_SOURCE_ERROR.set(user_issues | user_issues.hex_force_linear)
         # reset to previously stored
-        streamlit.session_state[key] = config().USER_SOURCE_FORCE_LINEAR
+        streamlit.session_state[key] = config().USER_SOURCE_FORCE_LINEAR.get()
         return
 
-    config().USER_SOURCE_FORCE_LINEAR = force_linear
+    config().USER_SOURCE_FORCE_LINEAR.set(force_linear)
 
 
 def create_colorspace_picker():
