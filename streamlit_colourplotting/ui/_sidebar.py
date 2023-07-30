@@ -145,6 +145,51 @@ def widget_figure_font_size(key, force_update=False):
     config().USER_FIGURE_FONT_SIZE = streamlit.session_state[key]
 
 
+def create_style_edit_row(
+    label: str,
+    initial_value: str,
+    show_alpha: bool = True,
+) -> str:
+    """
+    Args:
+        label: name of the style component edited
+        initial_value: color to set firts time the ui is created, hexadecimal with alpha.
+        show_alpha: make the alpha widget visible if True
+
+    Returns:
+        color picked by user as hexadecimal encoding, with alpha (as supported by matplotlib).
+    """
+
+    initial_color = initial_value[:7]
+    initial_alpha = int(initial_value[7:], 16) / 255
+
+    column1, column2, column3 = streamlit.columns([0.43, 0.12, 0.5])
+
+    with column1:
+        streamlit.markdown(label)
+
+    with column2:
+        color = streamlit.color_picker(
+            label=f"{label} Color",
+            label_visibility="collapsed",
+            value=initial_color,
+        )
+    with column3:
+        if show_alpha:
+            alpha = streamlit.number_input(
+                label=f"{label} Alpha",
+                min_value=0.0,
+                max_value=1.0,
+                value=initial_alpha,
+                label_visibility="collapsed",
+            )
+        else:
+            alpha = 0.0
+
+    alpha = f"{round(alpha * 255):02x}"
+    return f"{color}{alpha}"
+
+
 def create_sidebar():
     streamlit.title("Options".upper())
 
@@ -284,3 +329,22 @@ def create_sidebar():
         key=str(widget_image_samples),
         on_change=widget_image_samples,
     )
+
+    with streamlit.expander("Theming"):
+        color_background = create_style_edit_row("Background", "#1B1B1B00")
+        config().USER_STYLE["figure.facecolor"] = color_background
+        config().USER_STYLE["axes.facecolor"] = color_background
+        config().USER_STYLE["text.color"] = create_style_edit_row("Text", "#fefefeff")
+        color_axes = create_style_edit_row("Axes", "#666666ff")
+        config().USER_STYLE["axes.labelcolor"] = color_axes
+        config().USER_STYLE["xtick.color"] = color_axes
+        config().USER_STYLE["ytick.color"] = color_axes
+        config().USER_STYLE["axes.edgecolor"] = color_axes
+        config().USER_STYLE["legend.facecolor"] = create_style_edit_row(
+            "Legend", "#363636ff"
+        )
+        config().USER_STYLE["legend.edgecolor"] = create_style_edit_row(
+            "Legend Border",
+            "#36363600",
+            show_alpha=False,
+        )

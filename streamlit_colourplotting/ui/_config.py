@@ -137,6 +137,8 @@ class UserConfig:
             streamlit.session_state["USER_FIGURE_SIZE"] = 10.0
         if "USER_FIGURE_FONT_SIZE" not in streamlit.session_state:
             streamlit.session_state["USER_FIGURE_FONT_SIZE"] = 12.0
+        if "USER_STYLE" not in streamlit.session_state:
+            streamlit.session_state["USER_STYLE"] = {}
 
     @property
     def USER_SOURCE_TYPE(self) -> SourceType:
@@ -307,6 +309,14 @@ class UserConfig:
         streamlit.session_state["USER_FIGURE_FONT_SIZE"] = new_value
 
     @property
+    def USER_STYLE(self) -> dict:
+        return streamlit.session_state["USER_STYLE"]
+
+    @USER_STYLE.setter
+    def USER_STYLE(self, new_value: dict):
+        streamlit.session_state["USER_STYLE"] = new_value
+
+    @property
     def color(self) -> RGBAColor:
         colorspace = self.USER_SOURCE_COLORSPACE
         if self.USER_SOURCE_FORCE_LINEAR:
@@ -365,6 +375,7 @@ class UserConfig:
             "figure.figsize": (self.USER_FIGURE_SIZE, self.USER_FIGURE_SIZE),
             "font.size": self.USER_FIGURE_FONT_SIZE,
         }
+        style.update(self.USER_STYLE)
         marker_color = "RGB" if self.USER_SCATTER_COLOR_RGB else self.USER_SCATTER_COLOR
         with matplotlib.style.context(style):
             (
