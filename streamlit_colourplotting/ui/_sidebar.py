@@ -115,15 +115,6 @@ def widget_show_whitepoint(key, force_update=False):
     config().USER_SHOW_WHITEPOINT = streamlit.session_state[key]
 
 
-@widgetify
-def widget_image_samples(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_IMAGE_SAMPLES
-        return
-
-    config().USER_IMAGE_SAMPLES = streamlit.session_state[key]
-
-
 def create_colorspace_row(
     identifier: int,
     initial_color: str,
@@ -323,16 +314,6 @@ def create_sidebar():
             on_change=widget_marker_style,
         )
 
-    widget_image_samples(force_update=True)
-    streamlit.number_input(
-        label="Image Samples",
-        help="Only plot each pixel every N sample submitted.\n\n"
-        "Higher number increase processing speed of larger images.",
-        min_value=1,
-        key=str(widget_image_samples),
-        on_change=widget_image_samples,
-    )
-
     with streamlit.expander("Colorspaces"):
         colorspace1 = create_colorspace_row(1, "#F44336")
         colorspace2 = create_colorspace_row(2, "#9C27B0")
@@ -383,3 +364,12 @@ def create_sidebar():
             "#36363600",
             show_alpha=False,
         )
+
+    image_samples = streamlit.number_input(
+        label="Image Samples",
+        help="Only plot each pixel every N sample submitted.\n\n"
+        "Higher number increase processing speed of larger images.",
+        min_value=1,
+        value=config().USER_IMAGE_SAMPLES,
+    )
+    config().USER_IMAGE_SAMPLES = image_samples
