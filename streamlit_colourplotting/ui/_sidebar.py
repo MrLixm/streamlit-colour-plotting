@@ -60,17 +60,6 @@ def widget_scatter_size(key, force_update=False):
 
 
 @widgetify
-def widget_marker_style(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_MARKER_STYLE.get().as_label()
-        return
-
-    config().USER_MARKER_STYLE.set(
-        MarkerShapeStyle.from_label(streamlit.session_state[key])
-    )
-
-
-@widgetify
 def widget_plot_pointer_gamut(key, force_update=False):
     if key not in streamlit.session_state or force_update:
         streamlit.session_state[key] = config().USER_PLOT_POINTER_GAMUT.get()
@@ -296,15 +285,14 @@ def create_sidebar():
             )
             config().USER_SCATTER_ALPHA.set(marker_alpha)
 
-        widget_marker_style(force_update=True)
         options = MarkerShapeStyle.labels()
-        streamlit.selectbox(
+        marker_style = streamlit.selectbox(
             label="Marker Style",
             options=options,
             help="Style of the shape of the markers (scatter points).",
-            key=str(widget_marker_style),
-            on_change=widget_marker_style,
+            index=options.index(config().USER_MARKER_STYLE.default.as_label()),
         )
+        config().USER_MARKER_STYLE.set(MarkerShapeStyle.from_label(marker_style))
 
     with streamlit.expander("Colorspaces"):
         colorspace1 = create_colorspace_row(1, "#F44336")
