@@ -170,14 +170,14 @@ def create_sidebar():
 
     widget_show_diagram_background(force_update=True)
     streamlit.checkbox(
-        label="Show Diagram Background",
+        label="Show RGB Locus Background",
         key=str(widget_show_diagram_background),
         on_change=widget_show_diagram_background,
     )
 
     widget_rgb_locus(force_update=True)
     streamlit.checkbox(
-        label="Use RGB Spectral Locus",
+        label="Use RGB Locus Border",
         key=str(widget_rgb_locus),
         on_change=widget_rgb_locus,
     )
@@ -218,7 +218,7 @@ def create_sidebar():
         streamlit.slider(
             label="Marker Size",
             min_value=0.0,
-            max_value=100.0,
+            max_value=200.0,
             key=str(widget_scatter_size),
             on_change=widget_scatter_size,
         )
