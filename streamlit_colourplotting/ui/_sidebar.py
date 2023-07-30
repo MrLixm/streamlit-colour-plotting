@@ -15,15 +15,6 @@ from streamlit_colourplotting.ui import config
 
 
 @widgetify
-def widget_plot_pointer_gamut(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_PLOT_POINTER_GAMUT.get()
-        return
-
-    config().USER_PLOT_POINTER_GAMUT.set(streamlit.session_state[key])
-
-
-@widgetify
 def widget_pointer_gamut_alpha(key, force_update=False):
     if key not in streamlit.session_state or force_update:
         streamlit.session_state[key] = config().USER_POINTER_GAMUT_ALPHA.get()
@@ -166,12 +157,11 @@ def create_sidebar():
     )
     config().USER_SHOW_WHITEPOINT.set(show_whitepoints)
 
-    widget_plot_pointer_gamut(force_update=True)
     show_pointer_gamut = streamlit.checkbox(
         label="Show Pointer's Gamut",
-        key=str(widget_plot_pointer_gamut),
-        on_change=widget_plot_pointer_gamut,
+        value=config().USER_PLOT_POINTER_GAMUT.default,
     )
+    config().USER_PLOT_POINTER_GAMUT.set(show_pointer_gamut)
 
     widget_pointer_gamut_alpha(force_update=True)
     if show_pointer_gamut:
