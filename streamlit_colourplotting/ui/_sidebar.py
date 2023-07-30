@@ -51,15 +51,6 @@ def widget_rgb_locus(key, force_update=False):
 
 
 @widgetify
-def widget_scatter_size(key, force_update=False):
-    if key not in streamlit.session_state or force_update:
-        streamlit.session_state[key] = config().USER_SCATTER_SIZE.get()
-        return
-
-    config().USER_SCATTER_SIZE.set(streamlit.session_state[key])
-
-
-@widgetify
 def widget_plot_pointer_gamut(key, force_update=False):
     if key not in streamlit.session_state or force_update:
         streamlit.session_state[key] = config().USER_PLOT_POINTER_GAMUT.get()
@@ -243,14 +234,13 @@ def create_sidebar():
         )
 
     with streamlit.expander("Markers Styling"):
-        widget_scatter_size(force_update=True)
-        streamlit.slider(
+        marker_size = streamlit.slider(
             label="Marker Size",
             min_value=0.0,
             max_value=200.0,
-            key=str(widget_scatter_size),
-            on_change=widget_scatter_size,
+            value=config().USER_SCATTER_SIZE.default,
         )
+        config().USER_SCATTER_SIZE.set(marker_size)
 
         streamlit.markdown("###### Marker Color")
 
