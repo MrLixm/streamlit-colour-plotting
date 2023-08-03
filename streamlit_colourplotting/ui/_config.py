@@ -133,13 +133,25 @@ class UserConfig:
         DiagramMethod.cie1976,
         "USER_DIAGRAM_METHOD",
     )
-    USER_DIAGRAM_SHOW_BACKGROUND = UserConfigOption(
+    USER_LOCUS_BACKGROUND_RGB = UserConfigOption(
         False,
-        "USER_DIAGRAM_SHOW_BACKGROUND",
+        "USER_LOCUS_BACKGROUND_RGB",
     )
-    USER_RGB_LOCUS = UserConfigOption(
+    USER_LOCUS_SHOW = UserConfigOption(
         True,
-        "USER_RGB_LOCUS",
+        "USER_LOCUS_SHOW",
+    )
+    USER_LOCUS_COLOR_RGB = UserConfigOption(
+        True,
+        "USER_LOCUS_COLOR_RGB",
+    )
+    USER_LOCUS_COLOR = UserConfigOption(
+        "#4e4e4e",
+        "USER_LOCUS_COLOR",
+    )
+    USER_LOCUS_ALPHA = UserConfigOption(
+        1.0,
+        "USER_LOCUS_ALPHA",
     )
     USER_SOURCE_COLOR = UserConfigOption(
         RGBAColor(0.0, 0.0, 0.0),
@@ -320,6 +332,9 @@ class UserConfig:
             if self.USER_SCATTER_COLOR_RGB.get()
             else self.USER_SCATTER_COLOR.get()
         )
+        locus_color = (
+            "RGB" if self.USER_LOCUS_COLOR_RGB.get() else self.USER_LOCUS_COLOR.get()
+        )
         with matplotlib.style.context(self.USER_STYLE.get()):
             (
                 figure,
@@ -336,8 +351,10 @@ class UserConfig:
                     "zorder": 0,
                 },
                 # styling
-                spectral_locus_colours="RGB" if self.USER_RGB_LOCUS.get() else None,
-                show_diagram_colours=self.USER_DIAGRAM_SHOW_BACKGROUND.get(),
+                show_spectral_locus=self.USER_LOCUS_SHOW.get(),
+                spectral_locus_colours=locus_color,
+                spectral_locus_opacity=self.USER_LOCUS_ALPHA.get(),
+                show_diagram_colours=self.USER_LOCUS_BACKGROUND_RGB.get(),
                 show_whitepoints=self.USER_SHOW_WHITEPOINT.get(),
                 show_pointer_gamut=self.USER_PLOT_POINTER_GAMUT.get(),
                 pointer_gamut_colours=self.USER_POINTER_GAMUT_COLOR.get(),

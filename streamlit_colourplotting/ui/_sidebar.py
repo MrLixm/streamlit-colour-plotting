@@ -125,23 +125,54 @@ def create_sidebar():
     )
     config().USER_DIAGRAM_METHOD.set(DiagramMethod(diagram_method))
 
-    show_locus_background = streamlit.checkbox(
-        label="Show RGB Locus Background",
-        value=config().USER_DIAGRAM_SHOW_BACKGROUND.default,
-    )
-    config().USER_DIAGRAM_SHOW_BACKGROUND.set(show_locus_background)
-
-    use_rgb_locus = streamlit.checkbox(
-        label="Use RGB Locus Border",
-        value=config().USER_RGB_LOCUS.default,
-    )
-    config().USER_RGB_LOCUS.set(use_rgb_locus)
-
     show_whitepoints = streamlit.checkbox(
         label="Show Whitepoints",
         value=config().USER_SHOW_WHITEPOINT.default,
     )
     config().USER_SHOW_WHITEPOINT.set(show_whitepoints)
+
+    with streamlit.expander("Spectral Locus"):
+        show_locus = streamlit.checkbox(
+            label="Show Spectral Locus",
+            value=config().USER_LOCUS_SHOW.default,
+        )
+        config().USER_LOCUS_SHOW.set(show_locus)
+
+        show_locus_background = streamlit.checkbox(
+            label="RGB Background",
+            key="locusBackgroundRgb",
+            value=config().USER_LOCUS_BACKGROUND_RGB.default,
+        )
+        config().USER_LOCUS_BACKGROUND_RGB.set(show_locus_background)
+
+        use_rgb_locus = streamlit.checkbox(
+            label="RGB Border",
+            key="locusBorderRgb",
+            value=config().USER_LOCUS_COLOR_RGB.default,
+            disabled=not show_locus,
+        )
+        config().USER_LOCUS_COLOR_RGB.set(use_rgb_locus)
+
+        column1, column2, column3 = streamlit.columns([0.12, 0.45, 0.43])
+
+        with column1:
+            marker_color = streamlit.color_picker(
+                label="Locus Color",
+                label_visibility="collapsed",
+                disabled=use_rgb_locus,
+                value=config().USER_LOCUS_COLOR.default,
+            )
+            config().USER_LOCUS_COLOR.set(marker_color)
+
+        with column2:
+            marker_alpha = streamlit.number_input(
+                label="Locus Alpha",
+                label_visibility="collapsed",
+                min_value=0.0,
+                max_value=1.0,
+                value=config().USER_LOCUS_ALPHA.default,
+            )
+            config().USER_LOCUS_ALPHA.set(marker_alpha)
 
     with streamlit.expander("Pointer's Gamut"):
         show_pointer_gamut = streamlit.checkbox(
@@ -150,7 +181,7 @@ def create_sidebar():
         )
         config().USER_PLOT_POINTER_GAMUT.set(show_pointer_gamut)
 
-        column1, column2, column3 = streamlit.columns([0.2, 0.22, 0.58])
+        column1, column2, column3 = streamlit.columns([0.12, 0.45, 0.43])
 
         with column1:
             pointer_gamut_color = streamlit.color_picker(
@@ -161,9 +192,6 @@ def create_sidebar():
             config().USER_POINTER_GAMUT_COLOR.set(pointer_gamut_color)
 
         with column2:
-            streamlit.caption("Opacity")
-
-        with column3:
             pointer_gamut_alpha = streamlit.number_input(
                 label="Pointer's Gamut Opacity",
                 label_visibility="collapsed",
