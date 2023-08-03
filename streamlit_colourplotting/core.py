@@ -54,6 +54,30 @@ def transform_box(
     return xmin, xmax, ymin, ymax
 
 
+def rescale_image_fast(image_array: numpy.ndarray, target_width: int):
+    """
+    Rescale the given image array to the given width while preserving aspect ratio.
+
+    The rescaling is low-quality but fast.
+
+    Args:
+        image_array: array of shape looking like (height, width, 3)
+        target_width: size in pixels of the desired output width
+
+    Returns:
+        initial image rescaled as specified
+    """
+    source_width = image_array.shape[1]
+    width_ratio = source_width // target_width
+
+    source_height = image_array.shape[0]
+    target_height = int(source_height / (source_width / target_width))
+    height_ratio = int(source_height / target_height)
+
+    rescaled_array = image_array[::width_ratio, ::height_ratio, ...]
+    return rescaled_array
+
+
 def read_image_from_bytes(bytesio: BytesIO) -> numpy.ndarray:
     """
     Return an RGB image with a floating point encoding from the given bytes buffer.

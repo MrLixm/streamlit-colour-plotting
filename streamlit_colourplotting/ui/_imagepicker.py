@@ -35,15 +35,11 @@ def create_image_preview(image_array: numpy.ndarray, target_width):
     """
     Generate a small thumbnail displaying the submitted image
     """
-    source_width = image_array.shape[1]
-    width_ratio = source_width // target_width
 
-    source_height = image_array.shape[0]
-    target_height = int(source_height / (source_width / target_width))
-    height_ratio = int(source_height / target_height)
-
-    # XXX: very fast way to resize the image, we don't care about quality
-    preview_array = image_array[::width_ratio, ::height_ratio, ...]
+    # we don't care about quality as it's a preview
+    preview_array = streamlit_colourplotting.core.rescale_image_fast(
+        image_array, target_width
+    )
 
     source_colorspace = config()._source_colorspace
     preview_array = cocoon.colorspace_to_colorspace(
