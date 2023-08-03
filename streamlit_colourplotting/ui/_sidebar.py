@@ -334,6 +334,25 @@ def create_sidebar():
         )
         config().USER_STYLE.set(style)
 
+    with streamlit.expander("Grid"):
+        streamlit.caption(
+            "Note that the grid can unfortunately only be drawn **above** everything."
+        )
+
+        show_grid = streamlit.checkbox(
+            label="Show Grid",
+            value=config().USER_SHOW_GRID.default,
+        )
+        config().USER_SHOW_GRID.set(show_grid)
+
+        grid_color, grid_alpha = create_color_alpha_row(
+            label="Grid",
+            default_color=config().USER_GRID_COLOR.default,
+            default_alpha=config().USER_GRID_ALPHA.default,
+        )
+        config().USER_GRID_COLOR.set(grid_color)
+        config().USER_GRID_ALPHA.set(grid_alpha)
+
     image_samples = streamlit.number_input(
         label="Image Samples",
         help="Only plot each pixel every N sample submitted.\n\n"

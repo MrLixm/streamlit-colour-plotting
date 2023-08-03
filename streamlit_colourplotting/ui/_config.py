@@ -233,6 +233,18 @@ class UserConfig:
         True,
         "USER_SHOW_AXES",
     )
+    USER_SHOW_GRID = UserConfigOption(
+        False,
+        "USER_SHOW_GRID",
+    )
+    USER_GRID_COLOR = UserConfigOption(
+        "#CACACA",
+        "USER_GRID_COLOR",
+    )
+    USER_GRID_ALPHA = UserConfigOption(
+        0.5,
+        "USER_GRID_ALPHA",
+    )
 
     @property
     def _source_colorspace(self) -> cocoon.RgbColorspace:
@@ -373,6 +385,16 @@ class UserConfig:
                 axes_visible=self.USER_SHOW_AXES.get(),
                 **plot_settings,
             )
+
+            if self.USER_SHOW_GRID.get():
+                # NOTE: doesn't work anyway cause colour use negative zorder
+                axes.set_axisbelow(True)
+                axes.grid(
+                    visible=self.USER_SHOW_GRID.get(),
+                    alpha=self.USER_GRID_ALPHA.get(),
+                    color=self.USER_GRID_COLOR.get(),
+                )
+
         return figure, axes
 
 
