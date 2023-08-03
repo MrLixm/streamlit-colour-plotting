@@ -9,6 +9,51 @@ import numpy
 import cv2
 
 
+def transform_box(
+    xmin: float,
+    xmax: float,
+    ymin: float,
+    ymax: float,
+    scale: float,
+    offset_x: float,
+    offset_y: float,
+) -> tuple[float, float, float, float]:
+    """
+    Transform the given "box" shape defined by its x,y coordinates using given scale and offsets.
+
+    Args:
+        xmin: "left" of the box
+        xmax: "right" of the box
+        ymin: "top" of the box
+        ymax: "bottom"
+        scale: null == 1.0,  unit relative to x, y coordinates
+        offset_x: null == 0.0, unit relative to x coordinates
+        offset_y: null == 0.0, unit relative to y coordinates
+
+    Returns:
+        new coordinates as tuple[xmin, xmax, ymin, max]
+    """
+    center_x = (xmin + xmax) / 2
+    center_y = (ymin + ymax) / 2
+
+    xmin -= center_x
+    xmax -= center_x
+    ymin -= center_y
+    ymax -= center_y
+
+    xmin *= scale
+    xmax *= scale
+    ymin *= scale
+    ymax *= scale
+
+    xmin += center_x + offset_x
+    xmax += center_x + offset_x
+    ymin += center_y + offset_y
+    ymax += center_y + offset_y
+
+    return xmin, xmax, ymin, ymax
+
+
 def read_image_from_bytes(bytesio: BytesIO) -> numpy.ndarray:
     """
     Return an RGB image with a floating point encoding from the given bytes buffer.

@@ -15,36 +15,7 @@ from cocoon.color import RGBAColor
 from cocoon.color import ColorStringFormat
 
 from streamlit_colourplotting._utils import UifiedEnum
-
-
-def transform_box(
-    xmin: float,
-    xmax: float,
-    ymin: float,
-    ymax: float,
-    scale: float,
-    offset_x: float,
-    offset_y: float,
-) -> tuple[float, float, float, float]:
-    center_x = (xmin + xmax) / 2
-    center_y = (ymin + ymax) / 2
-
-    xmin -= center_x
-    xmax -= center_x
-    ymin -= center_y
-    ymax -= center_y
-
-    xmin *= scale
-    xmax *= scale
-    ymin *= scale
-    ymax *= scale
-
-    xmin += center_x + offset_x
-    xmax += center_x + offset_x
-    ymin += center_y + offset_y
-    ymax += center_y + offset_y
-
-    return xmin, xmax, ymin, ymax
+from streamlit_colourplotting.core import transform_box
 
 
 class SourceType(enum.Enum):
