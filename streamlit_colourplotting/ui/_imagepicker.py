@@ -22,7 +22,6 @@ SUPPORTED_EXTENSION = [
     ".ico",
     ".targa",
     ".dds",
-    ".psd",
 ]
 
 
