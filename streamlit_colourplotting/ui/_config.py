@@ -219,7 +219,8 @@ class UserConfig:
         "USER_IMAGE_SAMPLES",
     )
     USER_STYLE = UserConfigOption(
-        {},
+        # NOTE: cannot be an empty dict for streamlit
+        {"figure.figsize": 25.0},
         "USER_STYLE",
     )
     USER_FIGURE_COLORSPACES: UserConfigOption[list[tuple[str, str]]] = UserConfigOption(
