@@ -1,6 +1,9 @@
 import traceback
 
+import numpy
 import streamlit
+import cocoon
+import cocoon.color
 
 import streamlit_colourplotting.core
 from streamlit_colourplotting.ui import config
@@ -28,13 +31,42 @@ def _get_image_from_bytes(bytesio):
     return streamlit_colourplotting.core.read_image_from_bytes(bytesio)
 
 
+def create_image_preview(image_array: numpy.ndarray, target_width):
+    """
+    Generate a small thumbnail displaying the submitted image
+    """
+    source_width = image_array.shape[1]
+    width_ratio = source_width // target_width
+
+    source_height = image_array.shape[0]
+    target_height = int(source_height / (source_width / target_width))
+    height_ratio = int(source_height / target_height)
+
+    # XXX: very fast way to resize the image, we don't care about quality
+    preview_array = image_array[::width_ratio, ::height_ratio, ...]
+
+    source_colorspace = config()._source_colorspace
+    preview_array = cocoon.colorspace_to_colorspace(
+        preview_array,
+        source_colorspace,
+        cocoon.sRGB_COLORSPACE,
+        cocoon.ChromaticAdaptationTransform.get_default(),
+    )
+    preview_array = cocoon.color.convert_float_to_int8(preview_array)
+    streamlit.image(preview_array, caption=f"sRGB preview {image_array.shape}")
+
+
 def create_image_picker():
     create_colorspace_picker()
 
-    user_image = streamlit.file_uploader(
-        label="Image Path",
-        type=SUPPORTED_EXTENSION,
-    )
+    column1, column2 = streamlit.columns([0.3, 0.7])
+
+    with column2:
+        user_image = streamlit.file_uploader(
+            label="Image Path",
+            type=SUPPORTED_EXTENSION,
+        )
+
     image_array = None
 
     if user_image is not None:
@@ -49,8 +81,9 @@ def create_image_picker():
             )
             streamlit.error(f"Can't read provided image: {error}\n\n- {error_tb}")
         else:
-            streamlit.caption(
-                f"Image loaded as <{image_array.dtype} array {image_array.shape}>"
-            )
+            with column1:
+                create_image_preview(image_array, 200)
+
+                # streamlit.caption(f"<{image_array.dtype} {image_array.shape}>")
 
     config().USER_IMAGE.set(image_array)
