@@ -270,6 +270,18 @@ def create_sidebar():
         )
 
     with streamlit.expander("Theming"):
+        show_legend = streamlit.checkbox(
+            label="Show Legend",
+            value=config().USER_SHOW_LEGEND.default,
+        )
+        config().USER_SHOW_LEGEND.set(show_legend)
+
+        show_axes = streamlit.checkbox(
+            label="Show Axes",
+            value=config().USER_SHOW_AXES.default,
+        )
+        config().USER_SHOW_AXES.set(show_axes)
+
         style = config().USER_STYLE.get()
 
         figure_size = streamlit.slider(

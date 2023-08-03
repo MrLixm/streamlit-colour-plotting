@@ -225,6 +225,14 @@ class UserConfig:
         [(SOURCE_COLORSPACE_TOKEN, "#F44336")],
         "USER_FIGURE_COLORSPACES",
     )
+    USER_SHOW_LEGEND = UserConfigOption(
+        True,
+        "USER_SHOW_LEGEND",
+    )
+    USER_SHOW_AXES = UserConfigOption(
+        True,
+        "USER_SHOW_AXES",
+    )
 
     @property
     def _source_colorspace(self) -> cocoon.RgbColorspace:
@@ -361,6 +369,8 @@ class UserConfig:
                 pointer_gamut_opacity=self.USER_POINTER_GAMUT_ALPHA.get(),
                 transparent_background=False,
                 standalone=False,
+                legend=self.USER_SHOW_LEGEND.get(),
+                axes_visible=self.USER_SHOW_AXES.get(),
                 **plot_settings,
             )
         return figure, axes
