@@ -103,7 +103,9 @@ class UserConfigOption(Generic[T]):
     def __init__(self, default: T, identifier: str):
         self._default = default
         self._identifier = identifier
-        self.set(self._default)
+
+        if self._identifier not in streamlit.session_state:
+            self.set(self._default)
 
     @property
     def default(self) -> T:
@@ -126,133 +128,66 @@ class UserConfigOption(Generic[T]):
 class UserConfig:
     SOURCE_COLORSPACE_TOKEN = "$SOURCE_COLORSPACE$"
 
-    USER_SOURCE_TYPE = UserConfigOption(
-        SourceType.color,
-        "USER_SOURCE_TYPE",
-    )
-    USER_DIAGRAM_METHOD = UserConfigOption(
-        DiagramMethod.cie1976,
-        "USER_DIAGRAM_METHOD",
-    )
-    USER_LOCUS_BACKGROUND_RGB = UserConfigOption(
-        False,
-        "USER_LOCUS_BACKGROUND_RGB",
-    )
-    USER_LOCUS_SHOW = UserConfigOption(
-        True,
-        "USER_LOCUS_SHOW",
-    )
-    USER_LOCUS_COLOR_RGB = UserConfigOption(
-        True,
-        "USER_LOCUS_COLOR_RGB",
-    )
-    USER_LOCUS_COLOR = UserConfigOption(
-        "#4e4e4e",
-        "USER_LOCUS_COLOR",
-    )
-    USER_LOCUS_ALPHA = UserConfigOption(
-        1.0,
-        "USER_LOCUS_ALPHA",
-    )
-    USER_SOURCE_COLOR = UserConfigOption(
-        RGBAColor(0.0, 0.0, 0.0),
-        "USER_SOURCE_COLOR",
-    )
-    USER_SOURCE_COLORSPACE: UserConfigOption[RgbColorspace] = UserConfigOption(
-        sRGB_COLORSPACE,
-        "USER_SOURCE_COLORSPACE",
-    )
-    USER_SOURCE_FORCE_LINEAR = UserConfigOption(
-        False,
-        "USER_SOURCE_FORCE_LINEAR",
-    )
-    USER_SOURCE_COLOR_FORMAT = UserConfigOption(
-        ColorStringFormat.float_d4,
-        "USER_SOURCE_COLOR_FORMAT",
-    )
-    USER_SOURCE_ERROR = UserConfigOption(
-        UserIssue.unset,
-        "USER_SOURCE_ERROR",
-    )
-    USER_SCATTER_SIZE = UserConfigOption(
-        25.0,
-        "USER_SCATTER_SIZE",
-    )
-    USER_SCATTER_COLOR = UserConfigOption(
-        "#53DD97",
-        "USER_SCATTER_COLOR",
-    )
-    USER_SCATTER_COLOR_RGB = UserConfigOption(
-        True,
-        "USER_SCATTER_COLOR_RGB",
-    )
-    USER_SCATTER_ALPHA = UserConfigOption(
-        0.85,
-        "USER_SCATTER_ALPHA",
-    )
-    USER_MARKER_STYLE = UserConfigOption(
-        MarkerShapeStyle.circle,
-        "USER_MARKER_STYLE",
-    )
-    USER_PLOT_POINTER_GAMUT = UserConfigOption(
-        False,
-        "USER_PLOT_POINTER_GAMUT",
-    )
-    USER_POINTER_GAMUT_COLOR = UserConfigOption(
-        "#555555",
-        "USER_POINTER_GAMUT_COLOR",
-    )
-    USER_POINTER_GAMUT_ALPHA = UserConfigOption(
-        1.0,
-        "USER_POINTER_GAMUT_ALPHA",
-    )
-    USER_SHOW_WHITEPOINT = UserConfigOption(
-        True,
-        "USER_SHOW_WHITEPOINT",
-    )
-    USER_IMAGE: UserConfigOption[Optional[numpy.ndarray]] = UserConfigOption(
-        None,
-        "USER_IMAGE",
-    )
-    USER_IMAGE_SAMPLES = UserConfigOption(
-        10,
-        "USER_IMAGE_SAMPLES",
-    )
-    USER_STYLE = UserConfigOption(
-        # NOTE: cannot be an empty dict for streamlit
-        {"figure.figsize": 25.0},
-        "USER_STYLE",
-    )
-    USER_FIGURE_COLORSPACES: UserConfigOption[list[tuple[str, str]]] = UserConfigOption(
-        [(SOURCE_COLORSPACE_TOKEN, "#F44336")],
-        "USER_FIGURE_COLORSPACES",
-    )
-    USER_SHOW_LEGEND = UserConfigOption(
-        True,
-        "USER_SHOW_LEGEND",
-    )
-    USER_SHOW_AXES = UserConfigOption(
-        True,
-        "USER_SHOW_AXES",
-    )
-    USER_SHOW_GRID = UserConfigOption(
-        False,
-        "USER_SHOW_GRID",
-    )
-    USER_GRID_COLOR = UserConfigOption(
-        "#CACACA",
-        "USER_GRID_COLOR",
-    )
-    USER_GRID_ALPHA = UserConfigOption(
-        0.5,
-        "USER_GRID_ALPHA",
-    )
-
-    USER_AXES_SCALE = UserConfigOption(1.0, "USER_AXES_SCALE")
-
-    USER_AXES_OFFSET_X = UserConfigOption(0.0, "USER_AXES_OFFSET_X")
-
-    USER_AXES_OFFSET_Y = UserConfigOption(0.0, "USER_AXES_OFFSET_Y")
+    def __init__(self):
+        self.USER_SOURCE_TYPE = UserConfigOption(SourceType.color, "USER_SOURCE_TYPE")
+        self.USER_DIAGRAM_METHOD = UserConfigOption(
+            DiagramMethod.cie1976, "USER_DIAGRAM_METHOD"
+        )
+        self.USER_LOCUS_BACKGROUND_RGB = UserConfigOption(
+            False, "USER_LOCUS_BACKGROUND_RGB"
+        )
+        self.USER_LOCUS_SHOW = UserConfigOption(True, "USER_LOCUS_SHOW")
+        self.USER_LOCUS_COLOR_RGB = UserConfigOption(True, "USER_LOCUS_COLOR_RGB")
+        self.USER_LOCUS_COLOR = UserConfigOption("#4e4e4e", "USER_LOCUS_COLOR")
+        self.USER_LOCUS_ALPHA = UserConfigOption(1.0, "USER_LOCUS_ALPHA")
+        self.USER_SOURCE_COLOR = UserConfigOption(
+            RGBAColor(0.0, 0.0, 0.0), "USER_SOURCE_COLOR"
+        )
+        self.USER_SOURCE_COLORSPACE: UserConfigOption[RgbColorspace] = UserConfigOption(
+            sRGB_COLORSPACE, "USER_SOURCE_COLORSPACE"
+        )
+        self.USER_SOURCE_FORCE_LINEAR = UserConfigOption(
+            False, "USER_SOURCE_FORCE_LINEAR"
+        )
+        self.USER_SOURCE_COLOR_FORMAT = UserConfigOption(
+            ColorStringFormat.float_d4, "USER_SOURCE_COLOR_FORMAT"
+        )
+        self.USER_SOURCE_ERROR = UserConfigOption(UserIssue.unset, "USER_SOURCE_ERROR")
+        self.USER_SCATTER_SIZE = UserConfigOption(25.0, "USER_SCATTER_SIZE")
+        self.USER_SCATTER_COLOR = UserConfigOption("#53DD97", "USER_SCATTER_COLOR")
+        self.USER_SCATTER_COLOR_RGB = UserConfigOption(True, "USER_SCATTER_COLOR_RGB")
+        self.USER_SCATTER_ALPHA = UserConfigOption(0.85, "USER_SCATTER_ALPHA")
+        self.USER_MARKER_STYLE = UserConfigOption(
+            MarkerShapeStyle.circle, "USER_MARKER_STYLE"
+        )
+        self.USER_PLOT_POINTER_GAMUT = UserConfigOption(
+            False, "USER_PLOT_POINTER_GAMUT"
+        )
+        self.USER_POINTER_GAMUT_COLOR = UserConfigOption(
+            "#555555", "USER_POINTER_GAMUT_COLOR"
+        )
+        self.USER_POINTER_GAMUT_ALPHA = UserConfigOption(
+            1.0, "USER_POINTER_GAMUT_ALPHA"
+        )
+        self.USER_SHOW_WHITEPOINT = UserConfigOption(True, "USER_SHOW_WHITEPOINT")
+        self.USER_IMAGE: UserConfigOption[Optional[numpy.ndarray]] = UserConfigOption(
+            None, "USER_IMAGE"
+        )
+        self.USER_IMAGE_SAMPLES = UserConfigOption(10, "USER_IMAGE_SAMPLES")
+        self.USER_STYLE = UserConfigOption({}, "USER_STYLE")
+        self.USER_FIGURE_COLORSPACES: UserConfigOption[
+            list[tuple[str, str]]
+        ] = UserConfigOption(
+            [(self.SOURCE_COLORSPACE_TOKEN, "#F44336")], "USER_FIGURE_COLORSPACES"
+        )
+        self.USER_SHOW_LEGEND = UserConfigOption(True, "USER_SHOW_LEGEND")
+        self.USER_SHOW_AXES = UserConfigOption(True, "USER_SHOW_AXES")
+        self.USER_SHOW_GRID = UserConfigOption(False, "USER_SHOW_GRID")
+        self.USER_GRID_COLOR = UserConfigOption("#CACACA", "USER_GRID_COLOR")
+        self.USER_GRID_ALPHA = UserConfigOption(0.5, "USER_GRID_ALPHA")
+        self.USER_AXES_SCALE = UserConfigOption(1.0, "USER_AXES_SCALE")
+        self.USER_AXES_OFFSET_X = UserConfigOption(0.0, "USER_AXES_OFFSET_X")
+        self.USER_AXES_OFFSET_Y = UserConfigOption(0.0, "USER_AXES_OFFSET_Y")
 
     @property
     def _source_colorspace(self) -> cocoon.RgbColorspace:
