@@ -100,3 +100,10 @@ def create_main_ui():
         create_sidebar()
 
     create_body_source()
+
+    streamlit.divider()
+    streamlit.caption(
+        "![GitHub last commit (branch)](https://img.shields.io/github/last-commit/MrLixm/streamlit-colour-plotting/main?label=last%20updated) "
+        f"![GitHub last tag](https://img.shields.io/github/v/tag/MrLixm/streamlit-colour-plotting?filter=v*&label=version) "
+        f"[![GitHub Repo stars](https://img.shields.io/github/stars/MrLixm/streamlit-colour-plotting?logo=github)](https://github.com/MrLixm/streamlit-colour-plotting)"
+    )
