@@ -125,12 +125,6 @@ def create_sidebar():
     )
     config().USER_DIAGRAM_METHOD.set(DiagramMethod(diagram_method))
 
-    show_whitepoints = streamlit.checkbox(
-        label="Show Whitepoints",
-        value=config().USER_SHOW_WHITEPOINT.default,
-    )
-    config().USER_SHOW_WHITEPOINT.set(show_whitepoints)
-
     with streamlit.expander("Spectral Locus"):
         show_locus = streamlit.checkbox(
             label="Show Spectral Locus",
@@ -254,6 +248,12 @@ def create_sidebar():
         config().USER_MARKER_STYLE.set(MarkerShapeStyle.from_label(marker_style))
 
     with streamlit.expander("Colorspaces"):
+        show_whitepoints = streamlit.checkbox(
+            label="Show Whitepoints",
+            value=config().USER_SHOW_WHITEPOINT.default,
+        )
+        config().USER_SHOW_WHITEPOINT.set(show_whitepoints)
+
         colorspace1 = create_colorspace_row(1, "#F44336")
         colorspace2 = create_colorspace_row(2, "#9C27B0")
         colorspace3 = create_colorspace_row(3, "#3F51B5")
