@@ -12,6 +12,9 @@ streamlit.set_page_config(
     page_icon="📊",
     layout="centered",
     initial_sidebar_state="expanded",
+    menu_items={
+        "Report a bug": "https://github.com/MrLixm/streamlit-colour-plotting/issues",
+    },
 )
 
 colour.utilities.filter_warnings(colour_usage_warnings=True, python_warnings=True)
