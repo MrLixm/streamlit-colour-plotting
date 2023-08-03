@@ -31,6 +31,10 @@ You should now be able to run the application using the launcher :
 
 You can now start editing code in [streamlit_colourplotting/](streamlit_colourplotting).
 
+It is recommended to put in place a file watcher or a pre-commit hook that 
+would run [black](https://black.readthedocs.io/en/stable/) on all the files.
+
+
 ## Cocoon
 
 Note that for color manipulation, this application use [cocoon](https://github.com/MrLixm/cocoon) which
