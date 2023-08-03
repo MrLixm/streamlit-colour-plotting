@@ -11,7 +11,7 @@ python = ">3.9.7,<3.11"
 streamlit = "^1.25"
 colour-science = { version = "^0.4", extras = ["plotting"] }
 matplotlib = "*"
-cocoon = { git = "https://github.com/MrLixm/cocoon.git", branch = "main" }
+cocoon = { git = "https://github.com/MrLixm/cocoon.git", tag = "v0.5.0" }
 opencv-python= "^4.8"
 
 [tool.poetry.dev-dependencies]
