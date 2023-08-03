@@ -17,6 +17,36 @@ from cocoon.color import ColorStringFormat
 from streamlit_colourplotting._utils import UifiedEnum
 
 
+def transform_box(
+    xmin: float,
+    xmax: float,
+    ymin: float,
+    ymax: float,
+    scale: float,
+    offset_x: float,
+    offset_y: float,
+) -> tuple[float, float, float, float]:
+    center_x = (xmin + xmax) / 2
+    center_y = (ymin + ymax) / 2
+
+    xmin -= center_x
+    xmax -= center_x
+    ymin -= center_y
+    ymax -= center_y
+
+    xmin *= scale
+    xmax *= scale
+    ymin *= scale
+    ymax *= scale
+
+    xmin += center_x + offset_x
+    xmax += center_x + offset_x
+    ymin += center_y + offset_y
+    ymax += center_y + offset_y
+
+    return xmin, xmax, ymin, ymax
+
+
 class SourceType(enum.Enum):
     color = "Color"
     image = "Image"
@@ -246,6 +276,12 @@ class UserConfig:
         "USER_GRID_ALPHA",
     )
 
+    USER_AXES_SCALE = UserConfigOption(1.0, "USER_AXES_SCALE")
+
+    USER_AXES_OFFSET_X = UserConfigOption(0.0, "USER_AXES_OFFSET_X")
+
+    USER_AXES_OFFSET_Y = UserConfigOption(0.0, "USER_AXES_OFFSET_Y")
+
     @property
     def _source_colorspace(self) -> cocoon.RgbColorspace:
         colorspace = self.USER_SOURCE_COLORSPACE.get()
@@ -385,6 +421,22 @@ class UserConfig:
                 axes_visible=self.USER_SHOW_AXES.get(),
                 **plot_settings,
             )
+
+            bounds_x_min, bounds_x_max = axes.get_xlim()
+            bounds_y_min, bounds_y_max = axes.get_ylim()
+
+            bounds_x_min, bounds_x_max, bounds_y_min, bounds_y_max = transform_box(
+                bounds_x_min,
+                bounds_x_max,
+                bounds_y_min,
+                bounds_y_max,
+                scale=self.USER_AXES_SCALE.get(),
+                offset_x=self.USER_AXES_OFFSET_X.get(),
+                offset_y=self.USER_AXES_OFFSET_Y.get(),
+            )
+
+            axes.set_xlim(bounds_x_min, bounds_x_max)
+            axes.set_ylim(bounds_y_min, bounds_y_max)
 
             if self.USER_SHOW_GRID.get():
                 # NOTE: doesn't work anyway cause colour use negative zorder
