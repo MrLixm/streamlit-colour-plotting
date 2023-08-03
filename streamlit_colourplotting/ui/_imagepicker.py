@@ -68,6 +68,10 @@ def create_image_picker():
     if user_image is not None:
         try:
             image_array = _get_image_from_bytes(user_image)
+
+            with column1:
+                create_image_preview(image_array, 200)
+
         except Exception as error:
             error_tb = "\n- ".join(
                 [
@@ -76,10 +80,5 @@ def create_image_picker():
                 ]
             )
             streamlit.error(f"Can't read provided image: {error}\n\n- {error_tb}")
-        else:
-            with column1:
-                create_image_preview(image_array, 200)
-
-                # streamlit.caption(f"<{image_array.dtype} {image_array.shape}>")
 
     config().USER_IMAGE.set(image_array)
