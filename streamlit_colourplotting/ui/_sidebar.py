@@ -104,6 +104,46 @@ def create_style_edit_row(
     return f"{color}{alpha}"
 
 
+def create_color_alpha_row(
+    label: str,
+    default_color: str,
+    default_alpha: float,
+    disable_color: bool = False,
+) -> tuple[str, float]:
+    """
+    Create a widget to edit a color and an alpha value.
+
+    Args:
+        label: to create unique widgets
+        default_color: defautl value for color widget
+        default_alpha: defautl value for alpha widget
+        disable_color: True to dsiable the color picker widget
+
+    Returns:
+        tuple["hexadecimal color", "alpha 0-1 range"]
+    """
+    column1, column2, column3 = streamlit.columns([0.12, 0.45, 0.43])
+
+    with column1:
+        widget_color = streamlit.color_picker(
+            label=f"{label} Color",
+            label_visibility="collapsed",
+            disabled=disable_color,
+            value=default_color,
+        )
+
+    with column2:
+        widget_alpha = streamlit.number_input(
+            label=f"{label} Alpha",
+            label_visibility="collapsed",
+            min_value=0.0,
+            max_value=1.0,
+            value=default_alpha,
+        )
+
+    return widget_color, widget_alpha
+
+
 def create_sidebar():
     streamlit.title("Options".upper())
 
@@ -147,26 +187,14 @@ def create_sidebar():
         )
         config().USER_LOCUS_COLOR_RGB.set(use_rgb_locus)
 
-        column1, column2, column3 = streamlit.columns([0.12, 0.45, 0.43])
-
-        with column1:
-            marker_color = streamlit.color_picker(
-                label="Locus Color",
-                label_visibility="collapsed",
-                disabled=use_rgb_locus,
-                value=config().USER_LOCUS_COLOR.default,
-            )
-            config().USER_LOCUS_COLOR.set(marker_color)
-
-        with column2:
-            marker_alpha = streamlit.number_input(
-                label="Locus Alpha",
-                label_visibility="collapsed",
-                min_value=0.0,
-                max_value=1.0,
-                value=config().USER_LOCUS_ALPHA.default,
-            )
-            config().USER_LOCUS_ALPHA.set(marker_alpha)
+        locus_color, locus_alpha = create_color_alpha_row(
+            label="Locus",
+            default_color=config().USER_LOCUS_COLOR.default,
+            default_alpha=config().USER_LOCUS_ALPHA.default,
+            disable_color=use_rgb_locus,
+        )
+        config().USER_LOCUS_COLOR.set(locus_color)
+        config().USER_LOCUS_ALPHA.set(locus_alpha)
 
     with streamlit.expander("Pointer's Gamut"):
         show_pointer_gamut = streamlit.checkbox(
@@ -175,27 +203,13 @@ def create_sidebar():
         )
         config().USER_PLOT_POINTER_GAMUT.set(show_pointer_gamut)
 
-        column1, column2, column3 = streamlit.columns([0.12, 0.45, 0.43])
-
-        with column1:
-            pointer_gamut_color = streamlit.color_picker(
-                label="Pointer's Gamut Color",
-                label_visibility="collapsed",
-                value=config().USER_POINTER_GAMUT_COLOR.default,
-            )
-            config().USER_POINTER_GAMUT_COLOR.set(pointer_gamut_color)
-
-        with column2:
-            pointer_gamut_alpha = streamlit.number_input(
-                label="Pointer's Gamut Opacity",
-                label_visibility="collapsed",
-                min_value=0.0,
-                max_value=1.0,
-                step=0.1,
-                value=config().USER_POINTER_GAMUT_ALPHA.default,
-                help="Opacity",
-            )
-            config().USER_POINTER_GAMUT_ALPHA.set(pointer_gamut_alpha)
+        pointer_color, pointer_alpha = create_color_alpha_row(
+            label="Pointer's Gamut",
+            default_color=config().USER_POINTER_GAMUT_COLOR.default,
+            default_alpha=config().USER_POINTER_GAMUT_ALPHA.default,
+        )
+        config().USER_POINTER_GAMUT_COLOR.set(pointer_color)
+        config().USER_POINTER_GAMUT_ALPHA.set(pointer_alpha)
 
     with streamlit.expander("Markers Styling"):
         marker_size = streamlit.slider(
