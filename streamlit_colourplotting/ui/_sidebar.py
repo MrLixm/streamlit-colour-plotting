@@ -143,20 +143,37 @@ def create_sidebar():
     )
     config().USER_SHOW_WHITEPOINT.set(show_whitepoints)
 
-    show_pointer_gamut = streamlit.checkbox(
-        label="Show Pointer's Gamut",
-        value=config().USER_PLOT_POINTER_GAMUT.default,
-    )
-    config().USER_PLOT_POINTER_GAMUT.set(show_pointer_gamut)
-
-    if show_pointer_gamut:
-        pointer_gamut_alpha = streamlit.slider(
-            label="Pointer's Gamut Opacity",
-            min_value=0.0,
-            max_value=1.0,
-            value=config().USER_POINTER_GAMUT_ALPHA.default,
+    with streamlit.expander("Pointer's Gamut"):
+        show_pointer_gamut = streamlit.checkbox(
+            label="Show Pointer's Gamut",
+            value=config().USER_PLOT_POINTER_GAMUT.default,
         )
-        config().USER_POINTER_GAMUT_ALPHA.set(pointer_gamut_alpha)
+        config().USER_PLOT_POINTER_GAMUT.set(show_pointer_gamut)
+
+        column1, column2, column3 = streamlit.columns([0.2, 0.22, 0.58])
+
+        with column1:
+            pointer_gamut_color = streamlit.color_picker(
+                label="Pointer's Gamut Color",
+                label_visibility="collapsed",
+                value=config().USER_POINTER_GAMUT_COLOR.default,
+            )
+            config().USER_POINTER_GAMUT_COLOR.set(pointer_gamut_color)
+
+        with column2:
+            streamlit.caption("Opacity")
+
+        with column3:
+            pointer_gamut_alpha = streamlit.number_input(
+                label="Pointer's Gamut Opacity",
+                label_visibility="collapsed",
+                min_value=0.0,
+                max_value=1.0,
+                step=0.1,
+                value=config().USER_POINTER_GAMUT_ALPHA.default,
+                help="Opacity",
+            )
+            config().USER_POINTER_GAMUT_ALPHA.set(pointer_gamut_alpha)
 
     with streamlit.expander("Markers Styling"):
         marker_size = streamlit.slider(

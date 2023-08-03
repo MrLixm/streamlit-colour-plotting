@@ -185,6 +185,10 @@ class UserConfig:
         False,
         "USER_PLOT_POINTER_GAMUT",
     )
+    USER_POINTER_GAMUT_COLOR = UserConfigOption(
+        "#555555",
+        "USER_POINTER_GAMUT_COLOR",
+    )
     USER_POINTER_GAMUT_ALPHA = UserConfigOption(
         1.0,
         "USER_POINTER_GAMUT_ALPHA",
@@ -336,6 +340,7 @@ class UserConfig:
                 show_diagram_colours=self.USER_DIAGRAM_SHOW_BACKGROUND.get(),
                 show_whitepoints=self.USER_SHOW_WHITEPOINT.get(),
                 show_pointer_gamut=self.USER_PLOT_POINTER_GAMUT.get(),
+                pointer_gamut_colours=self.USER_POINTER_GAMUT_COLOR.get(),
                 pointer_gamut_opacity=self.USER_POINTER_GAMUT_ALPHA.get(),
                 transparent_background=False,
                 standalone=False,
