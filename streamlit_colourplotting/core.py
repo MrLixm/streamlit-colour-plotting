@@ -68,14 +68,16 @@ def rescale_image_fast(image_array: numpy.ndarray, target_width: int):
         initial image rescaled as specified
     """
     source_width = image_array.shape[1]
-    width_ratio = source_width // target_width
+    target_width = max(target_width, source_width)
+    width_ratio = int(source_width / target_width)
 
     source_height = image_array.shape[0]
     target_height = int(source_height / (source_width / target_width))
     height_ratio = int(source_height / target_height)
 
-    rescaled_array = image_array[::width_ratio, ::height_ratio, ...]
-    return rescaled_array
+    if width_ratio >= 1 and height_ratio >= 1:
+        return image_array[::width_ratio, ::height_ratio, ...]
+    return image_array
 
 
 def read_image_from_bytes(bytesio: BytesIO) -> numpy.ndarray:
