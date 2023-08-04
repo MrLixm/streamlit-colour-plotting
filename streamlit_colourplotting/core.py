@@ -77,7 +77,7 @@ def rescale_image_fast(image_array: numpy.ndarray, target_width: int):
 
     if width_ratio >= 1 and height_ratio >= 1:
         return image_array[::width_ratio, ::height_ratio, ...]
-    return image_array
+    return image_array.copy()
 
 
 def read_image_from_bytes(bytesio: BytesIO) -> numpy.ndarray:
