@@ -44,10 +44,7 @@ def create_body_source():
 
     streamlit.divider()
 
-    with streamlit.spinner("Generating plot ..."):
-        figure = config().plot[0]
-
-    streamlit.pyplot(figure, clear_figure=True)
+    graph_container = streamlit.empty()
 
     column1, column2, column3 = streamlit.columns(3)
 
@@ -80,6 +77,13 @@ def create_body_source():
             value=config().USER_AXES_OFFSET_Y.default,
         )
         config().USER_AXES_OFFSET_Y.set(graph_offset_y)
+
+    # make sure the graph is created at the end
+    with streamlit.spinner("Generating plot ..."):
+        figure = config().plot[0]
+
+    with graph_container:
+        streamlit.pyplot(figure, clear_figure=True)
 
 
 def create_main_ui():
