@@ -79,4 +79,11 @@ def create_image_picker():
             )
             streamlit.error(f"Can't read provided image: {error}\n\n- {error_tb}")
 
+    else:
+        with column1:
+            streamlit.caption(
+                "⚠️Please avoid uploading images with too large dimensions (>2K)"
+                "(especially 8/16bit images). "
+                "**You might crash the server.**"
+            )
     config().USER_IMAGE.set(image_array)
