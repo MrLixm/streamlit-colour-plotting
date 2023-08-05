@@ -16,6 +16,7 @@ opencv-python-headless = "^4.8"
 
 [tool.poetry.dev-dependencies]
 black = "*"
+psrecord = "*"
 
 [build-system]
 requires = ["poetry-core"]

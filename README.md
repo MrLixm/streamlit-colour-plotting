@@ -39,3 +39,13 @@ would run [black](https://black.readthedocs.io/en/stable/) on all the files.
 
 Note that for color manipulation, this application use [cocoon](https://github.com/MrLixm/cocoon) which
 is mostly a convenient wrapper around colour library.
+
+## Profiling
+
+As streamlit cloud machine are limited in ressources, it's a good idea to 
+check the memory profile of our app.
+
+Once the streamlit app is started you can run the
+[profile-running-streamlit.sh](dev/profile-running-streamlit.sh) script and
+follow its intrsuction (make sure to launch it with the current directory being the 
+root of this repo).
