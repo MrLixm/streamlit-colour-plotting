@@ -113,12 +113,14 @@ class UserConfigOption(Generic[T]):
 
     def get(self) -> T:
         value = streamlit.session_state[self._identifier]
+        # XXX: issues with enum and streamlit rerun, cannot store an enum instance
         if isinstance(self._default, enum.Enum):
             value = self._default.__class__(value)
 
         return value
 
     def set(self, new_value: T):
+        # XXX: issues with enum and streamlit rerun, cannot store an enum instance
         if isinstance(self._default, enum.Enum):
             streamlit.session_state[self._identifier] = new_value.value
         else:
