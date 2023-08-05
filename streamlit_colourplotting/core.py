@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 from io import BytesIO
 from typing import Optional
 
@@ -7,6 +9,8 @@ import imageio.v3 as imageio
 import numpy
 
 import cv2
+
+LOGGER = logging.getLogger(__name__)
 
 
 def transform_box(
@@ -84,6 +88,7 @@ def read_image_from_bytes(bytesio: BytesIO) -> numpy.ndarray:
     """
     Return an RGB image with a floating point encoding from the given bytes buffer.
     """
+    LOGGER.debug(f"initial BytesIO size { sys.getsizeof(bytesio) / 1024**2}MB")
     # make sure the buffer cursor is back at start
     bytesio.seek(0)
 
@@ -108,5 +113,7 @@ def read_image_from_bytes(bytesio: BytesIO) -> numpy.ndarray:
     if image.shape[2] > 3:
         image = image[:, :, :3]
 
+    LOGGER.debug(f"initial ndarray size {sys.getsizeof(image) / 1024**2}MB")
     image = colour.io.convert_bit_depth(image, "float32")
+    LOGGER.debug(f"float32 ndarray size {sys.getsizeof(image) / 1024**2}MB")
     return image
