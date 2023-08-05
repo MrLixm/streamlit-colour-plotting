@@ -4,3 +4,6 @@ backgroundColor="#22222a"
 secondaryBackgroundColor="#31333F"
 textColor="#fafafa"
 font="sans serif"
+
+[server]
+maxUploadSize = 80
