@@ -175,7 +175,7 @@ class UserConfig:
         self.USER_IMAGE: UserConfigOption[Optional[numpy.ndarray]] = UserConfigOption(
             None, "USER_IMAGE"
         )
-        self.USER_IMAGE_SAMPLES = UserConfigOption(10, "USER_IMAGE_SAMPLES")
+        self.USER_IMAGE_SAMPLES = UserConfigOption(20, "USER_IMAGE_SAMPLES")
         self.USER_STYLE = UserConfigOption({}, "USER_STYLE")
         self.USER_FIGURE_COLORSPACES: UserConfigOption[
             list[tuple[str, str]]

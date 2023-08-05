@@ -357,7 +357,7 @@ def create_sidebar():
         label="Image Samples",
         help="Only plot each pixel every N sample submitted.\n\n"
         "Higher number increase processing speed of larger images.",
-        min_value=1,
+        min_value=10,
         value=config().USER_IMAGE_SAMPLES.default,
     )
     config().USER_IMAGE_SAMPLES.set(image_samples)
