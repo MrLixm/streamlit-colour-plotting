@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "streamlit-colour-plotting"
-version = "1.0.2"
+version = "1.0.3"
 description = "Web-app to plot colors, images, colorspaces in graphs."
 authors = ["Liam Collod <monsieurlixm@gmail.com>"]
 readme = "README.md"
