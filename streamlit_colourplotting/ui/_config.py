@@ -256,6 +256,9 @@ class UserConfig:
 
             return image
 
+        else:
+            raise ValueError(f"Unsupported enum value: {self.USER_SOURCE_TYPE.get()}")
+
     @property
     def plot(self) -> tuple[matplotlib.pyplot.Figure, matplotlib.pyplot.Axes]:
         image = self.image
