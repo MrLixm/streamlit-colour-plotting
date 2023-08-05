@@ -25,7 +25,6 @@ SUPPORTED_EXTENSION = [
 ]
 
 
-@streamlit.cache_data
 def _get_image_from_bytes(bytesio):
     return streamlit_colourplotting.core.read_image_from_bytes(bytesio)
 
