@@ -34,6 +34,21 @@ You can now start editing code in [streamlit_colourplotting/](streamlit_colourpl
 It is recommended to put in place a file watcher or a pre-commit hook that 
 would run [black](https://black.readthedocs.io/en/stable/) on all the files.
 
+## Logic
+
+Streamlit use a single file as entry point that is re-run everytime a widget
+change on the web GUI.
+
+This file is located in [./src/app.py](./src/app.py). It is quite empty and 
+only import the python package `streamlit_colourplotting` which define everything.
+
+A important concept to understand :
+- streamlit re-run `app.py` from top to bottom everytime
+- but python cache imported package on their first import
+
+This mean that anything in the global scope will be shared along users. This why
+the "config" system store everything in session_state instead of python global variables.
+
 
 ## Cocoon
 
