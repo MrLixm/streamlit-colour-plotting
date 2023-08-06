@@ -85,6 +85,8 @@ def create_body_source():
     with graph_container:
         streamlit.pyplot(figure, clear_figure=True)
 
+    config().post_clean()
+
 
 def create_main_ui():
     streamlit.title("Colour plotter".upper())

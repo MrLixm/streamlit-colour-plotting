@@ -361,6 +361,14 @@ class UserConfig:
 
         return figure, axes
 
+    def post_clean(self):
+        """
+        Optimize the user config. To use after it has been used as intended.
+        """
+        # we clear the image array as we don't need it anymore,
+        # this make sure it doesn't stay in memory
+        self.USER_IMAGE.set(None)
+
 
 def config(force_instance: bool = False) -> UserConfig:
     """
