@@ -1,3 +1,6 @@
+import io
+
+import matplotlib.pyplot
 import streamlit
 
 from streamlit_colourplotting.ui import config
@@ -82,10 +85,22 @@ def create_body_source():
     with streamlit.spinner("Generating plot ..."):
         figure, axes = config().generate_plot()
 
+    # execute before calling matplotlib.pyplot.show()
+    plot_file = io.BytesIO()
+    matplotlib.pyplot.savefig(plot_file, format="svg")
+
     with graph_container:
+        # this call matplotlib.pyplot.show()
         streamlit.pyplot(figure, clear_figure=True)
 
     config().post_clean()
+
+    streamlit.download_button(
+        label="Download as SVG", data=plot_file, file_name="plot.svg"
+    )
+
+    plot_file.flush()
+    plot_file.close()
 
 
 def create_main_ui():
