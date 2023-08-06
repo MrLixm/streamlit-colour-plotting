@@ -33,7 +33,7 @@ def create_issue_warning():
 
 
 def create_body_source():
-    streamlit.header("Source")
+    streamlit.header("Color Source")
 
     create_issue_warning()
 
@@ -42,7 +42,7 @@ def create_body_source():
     elif config().USER_SOURCE_TYPE.get() == config().USER_SOURCE_TYPE.get().image:
         create_image_picker()
 
-    streamlit.divider()
+    streamlit.header("Plot Result")
 
     graph_container = streamlit.empty()
 
@@ -89,8 +89,6 @@ def create_body_source():
 
 
 def create_main_ui():
-    streamlit.title("Colour plotter".upper())
-
     # HACK to have columns child vertically aligned on the center
     # HACK to have image caption above and not under
     streamlit.markdown(
