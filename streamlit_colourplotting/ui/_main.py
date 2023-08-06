@@ -80,7 +80,7 @@ def create_body_source():
 
     # make sure the graph is created at the end
     with streamlit.spinner("Generating plot ..."):
-        figure = config().plot[0]
+        figure, axes = config().generate_plot()
 
     with graph_container:
         streamlit.pyplot(figure, clear_figure=True)

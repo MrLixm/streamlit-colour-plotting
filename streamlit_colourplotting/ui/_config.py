@@ -261,8 +261,10 @@ class UserConfig:
         else:
             raise ValueError(f"Unsupported enum value: {self.USER_SOURCE_TYPE.get()}")
 
-    @property
-    def plot(self) -> tuple[matplotlib.pyplot.Figure, matplotlib.pyplot.Axes]:
+    def generate_plot(self) -> tuple[matplotlib.pyplot.Figure, matplotlib.pyplot.Axes]:
+        """
+        Generate the matplotlib graph using all the options previously configured.
+        """
         image = self.image
         colorspace = self._source_colorspace
         colour_colorspace = colorspace.as_colour_colorspace()
