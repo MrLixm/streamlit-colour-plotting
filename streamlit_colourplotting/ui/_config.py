@@ -204,7 +204,23 @@ class UserConfig:
         return colorspace
 
     @property
-    def _figure_colorspaces(self) -> dict[colour.RGB_Colourspace, str]:
+    def color(self) -> RGBAColor:
+        colorspace = self.USER_SOURCE_COLORSPACE.get()
+        color = self.USER_SOURCE_COLOR.get().as_colorspace(colorspace)
+
+        if self.USER_SOURCE_FORCE_LINEAR.get():
+            colorspace = colorspace.as_linear_copy()
+            color = color.as_colorspace(colorspace)
+
+        return color
+
+    def _get_figure_colorspaces(self) -> dict[colour.RGB_Colourspace, str]:
+        """
+        Generate a list of colorspace to display in the graph with their associated display color.
+
+        Returns:
+            dict["colorspace instance", "hexadecimal color"]
+        """
         figure_colorspaces = {}
         _figure_colorspaces = self.USER_FIGURE_COLORSPACES.get()
 
@@ -222,17 +238,6 @@ class UserConfig:
             figure_colorspaces[colorspace] = color
 
         return figure_colorspaces
-
-    @property
-    def color(self) -> RGBAColor:
-        colorspace = self.USER_SOURCE_COLORSPACE.get()
-        color = self.USER_SOURCE_COLOR.get().as_colorspace(colorspace)
-
-        if self.USER_SOURCE_FORCE_LINEAR.get():
-            colorspace = colorspace.as_linear_copy()
-            color = color.as_colorspace(colorspace)
-
-        return color
 
     def generate_image(self) -> numpy.ndarray:
         """
@@ -270,7 +275,7 @@ class UserConfig:
         image = self.generate_image()
         colorspace = self.source_colorspace
         colour_colorspace = colorspace.as_colour_colorspace()
-        figure_colorspaces = self._figure_colorspaces
+        figure_colorspaces = self._get_figure_colorspaces()
         diagram_method = self.USER_DIAGRAM_METHOD.get()
 
         if diagram_method == diagram_method.cie1931:
