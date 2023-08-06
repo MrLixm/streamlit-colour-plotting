@@ -34,6 +34,16 @@ You can now start editing code in [streamlit_colourplotting/](streamlit_colourpl
 It is recommended to put in place a file watcher or a pre-commit hook that 
 would run [black](https://black.readthedocs.io/en/stable/) on all the files.
 
+## Configuration
+
+### Environment Variables
+
+To use for local development (not on cloud).
+
+- `STCP_DISABLE_SIZE_LIMITATIONS` : to set with any non-empty value. 
+    Remove the 2048 size limitation for images upload.
+- `APP_LOG_LEVEL` : set the python application logger level. Except a python log level in upper case. ex: `WARNING`
+
 ## Logic
 
 Streamlit use a single file as entry point that is re-run everytime a widget

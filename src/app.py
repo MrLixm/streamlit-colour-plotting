@@ -3,6 +3,8 @@ import os
 
 # must be executed before cv2 first import
 os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
+# to enable locally but to disable on streamlit cloud
+# os.environ["STCP_DISABLE_SIZE_LIMITATIONS"] = "1"
 
 import colour.utilities
 import psutil

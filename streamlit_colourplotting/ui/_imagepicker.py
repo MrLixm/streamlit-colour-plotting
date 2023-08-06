@@ -1,3 +1,5 @@
+import os
+import time
 import traceback
 
 import numpy
@@ -67,10 +69,19 @@ def create_image_picker():
         try:
             image_array = _get_image_from_bytes(user_image)
 
+            if not os.getenv("STCP_DISABLE_SIZE_LIMITATIONS") and (
+                image_array.shape[0] > 2048 or image_array.shape[1] > 2048
+            ):
+                raise ValueError(
+                    f"Given image has dimensions superior to 2048x2048: {image_array.shape}."
+                    f"This might crash the server, submit a smaller image."
+                )
+
             with column1:
                 create_image_preview(image_array, 200)
 
         except Exception as error:
+            image_array = None
             error_tb = "\n- ".join(
                 [
                     line.split(",", 1)[-1]
