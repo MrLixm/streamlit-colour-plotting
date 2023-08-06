@@ -39,7 +39,7 @@ def create_image_preview(image_array: numpy.ndarray, target_width):
         image_array, target_width
     )
 
-    source_colorspace = config()._source_colorspace
+    source_colorspace = config().source_colorspace
     preview_array = cocoon.colorspace_to_colorspace(
         preview_array,
         source_colorspace,

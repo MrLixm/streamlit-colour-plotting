@@ -192,7 +192,10 @@ class UserConfig:
         self.USER_AXES_OFFSET_Y = UserConfigOption(0.0, "USER_AXES_OFFSET_Y")
 
     @property
-    def _source_colorspace(self) -> cocoon.RgbColorspace:
+    def source_colorspace(self) -> cocoon.RgbColorspace:
+        """
+        Full colorspace specification describing the source (linearized or not)
+        """
         colorspace = self.USER_SOURCE_COLORSPACE.get()
 
         if self.USER_SOURCE_FORCE_LINEAR.get():
@@ -207,7 +210,7 @@ class UserConfig:
 
         for colorspace_name, color in _figure_colorspaces:
             if colorspace_name == self.SOURCE_COLORSPACE_TOKEN:
-                colorspace = self._source_colorspace.as_colour_colorspace()
+                colorspace = self.source_colorspace.as_colour_colorspace()
 
             elif colorspace_name is None:
                 continue
@@ -243,7 +246,7 @@ class UserConfig:
         elif self.USER_SOURCE_TYPE.get() == SourceType.image:
             samples = self.USER_IMAGE_SAMPLES.get()
             image = self.USER_IMAGE.get()
-            source_colorspace = self._source_colorspace
+            source_colorspace = self.source_colorspace
 
             if image is None:
                 return numpy.full([2, 2, 3], [0.0, 0.0, 0.0])
@@ -265,7 +268,7 @@ class UserConfig:
         Generate the matplotlib graph using all the options previously configured.
         """
         image = self.generate_image()
-        colorspace = self._source_colorspace
+        colorspace = self.source_colorspace
         colour_colorspace = colorspace.as_colour_colorspace()
         figure_colorspaces = self._figure_colorspaces
         diagram_method = self.USER_DIAGRAM_METHOD.get()
