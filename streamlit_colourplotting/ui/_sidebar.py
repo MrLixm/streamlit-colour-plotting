@@ -353,6 +353,38 @@ def create_sidebar():
         config().USER_GRID_COLOR.set(grid_color)
         config().USER_GRID_ALPHA.set(grid_alpha)
 
+    with streamlit.expander("Graph Transform"):
+        graph_scale = streamlit.number_input(
+            label="Graph Scale",
+            min_value=0.0,
+            max_value=100.0,
+            step=0.2,
+            value=1 / config().USER_AXES_SCALE.default,
+        )
+        config().USER_AXES_SCALE.set(1 / graph_scale)
+
+        column1, column2 = streamlit.columns(2)
+
+        with column1:
+            graph_offset_x = streamlit.number_input(
+                label="Graph Offset X",
+                min_value=-100.0,
+                max_value=100.0,
+                step=0.05,
+                value=config().USER_AXES_OFFSET_X.default,
+            )
+            config().USER_AXES_OFFSET_X.set(graph_offset_x)
+
+        with column2:
+            graph_offset_y = streamlit.number_input(
+                label="Graph Offset Y",
+                min_value=-100.0,
+                max_value=100.0,
+                step=0.05,
+                value=config().USER_AXES_OFFSET_Y.default,
+            )
+            config().USER_AXES_OFFSET_Y.set(graph_offset_y)
+
     image_samples = streamlit.number_input(
         label="Image Samples",
         help="Only plot each pixel every N sample submitted.\n\n"

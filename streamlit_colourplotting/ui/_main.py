@@ -47,40 +47,6 @@ def create_body_source():
 
     streamlit.header("Plot Result")
 
-    graph_container = streamlit.empty()
-
-    column1, column2, column3 = streamlit.columns(3)
-
-    with column1:
-        graph_scale = streamlit.number_input(
-            label="Graph Scale",
-            min_value=0.0,
-            max_value=100.0,
-            step=0.2,
-            value=1 / config().USER_AXES_SCALE.default,
-        )
-        config().USER_AXES_SCALE.set(1 / graph_scale)
-
-    with column2:
-        graph_offset_x = streamlit.number_input(
-            label="Graph Offset X",
-            min_value=-100.0,
-            max_value=100.0,
-            step=0.05,
-            value=config().USER_AXES_OFFSET_X.default,
-        )
-        config().USER_AXES_OFFSET_X.set(graph_offset_x)
-
-    with column3:
-        graph_offset_y = streamlit.number_input(
-            label="Graph Offset Y",
-            min_value=-100.0,
-            max_value=100.0,
-            step=0.05,
-            value=config().USER_AXES_OFFSET_Y.default,
-        )
-        config().USER_AXES_OFFSET_Y.set(graph_offset_y)
-
     # make sure the graph is created at the end
     with streamlit.spinner("Generating plot ..."):
         figure, axes = config().generate_plot()
@@ -89,9 +55,8 @@ def create_body_source():
     plot_file = io.BytesIO()
     matplotlib.pyplot.savefig(plot_file, format="svg")
 
-    with graph_container:
-        # this call matplotlib.pyplot.show()
-        streamlit.pyplot(figure, clear_figure=True)
+    # this call matplotlib.pyplot.show()
+    streamlit.pyplot(figure, clear_figure=True)
 
     config().post_clean()
 
