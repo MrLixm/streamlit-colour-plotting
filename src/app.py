@@ -23,7 +23,7 @@ def _configure_logging():
     )
 
     if APP_LOG_LEVEL_KEY not in streamlit.session_state:
-        APP_LOG_LEVEL = os.getenv("APP_LOG_LEVEL", "INFO").upper()
+        APP_LOG_LEVEL = os.getenv("STCP_APP_LOG_LEVEL", "INFO").upper()
         streamlit.session_state[APP_LOG_LEVEL_KEY] = APP_LOG_LEVEL
 
     ROOT_LOGGER = logging.getLogger(streamlit_colourplotting.__name__)

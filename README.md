@@ -42,7 +42,7 @@ To use for local development (not on cloud).
 
 - `STCP_DISABLE_SIZE_LIMITATIONS` : to set with any non-empty value. 
     Remove the 2048 size limitation for images upload.
-- `APP_LOG_LEVEL` : set the python application logger level. Except a python log level in upper case. ex: `WARNING`
+- `STCP_APP_LOG_LEVEL` : set the python application logger level. Except a python log level in upper case. ex: `WARNING`
 
 ## Logic
 
