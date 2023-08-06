@@ -337,7 +337,8 @@ class UserConfig:
                 pointer_gamut_colours=self.USER_POINTER_GAMUT_COLOR.get(),
                 pointer_gamut_opacity=self.USER_POINTER_GAMUT_ALPHA.get(),
                 transparent_background=False,
-                standalone=False,
+                # prevent calling show()
+                standalone=True,
                 legend=self.USER_SHOW_LEGEND.get(),
                 axes_visible=self.USER_SHOW_AXES.get(),
                 **plot_settings,
