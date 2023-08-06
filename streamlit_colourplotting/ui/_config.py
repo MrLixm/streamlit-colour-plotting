@@ -231,8 +231,7 @@ class UserConfig:
 
         return color
 
-    @property
-    def image(self) -> numpy.ndarray:
+    def generate_image(self) -> numpy.ndarray:
         """
         Return a floating point R-G-B image with an arbitrary dimension.
         """
@@ -265,7 +264,7 @@ class UserConfig:
         """
         Generate the matplotlib graph using all the options previously configured.
         """
-        image = self.image
+        image = self.generate_image()
         colorspace = self._source_colorspace
         colour_colorspace = colorspace.as_colour_colorspace()
         figure_colorspaces = self._figure_colorspaces
