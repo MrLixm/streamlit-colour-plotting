@@ -1,6 +1,8 @@
 import logging
 import os
 
+# before colour first import
+os.environ["COLOUR_SCIENCE__DEFAULT_FLOAT_DTYPE"] = "float32"
 # must be executed before cv2 first import
 os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
 # to enable locally but to disable on streamlit cloud
