@@ -1,3 +1,4 @@
+import cocoon
 import numpy
 import streamlit
 
@@ -57,7 +58,10 @@ def create_colorspace_picker():
 
         with column1:
             widget_colorspace(force_update=True)
-            options = [colorspace.name for colorspace in get_available_colorspaces()]
+            with cocoon.disable_colorspaces(["Passthrough", "Pointer's Gamut"]):
+                options = [
+                    colorspace.name for colorspace in get_available_colorspaces()
+                ]
             streamlit.selectbox(
                 label="Colorspace",
                 options=options,

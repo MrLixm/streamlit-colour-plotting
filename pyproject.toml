@@ -11,7 +11,7 @@ python = ">3.9.7,<3.11"
 streamlit = "^1.25"
 colour-science = { version = "^0.4", extras = ["plotting"] }
 matplotlib = "*"
-cocoon = { git = "https://github.com/MrLixm/cocoon.git", tag = "v0.5.0" }
+cocoon = { git = "https://github.com/MrLixm/cocoon.git", tag = "v0.6.1" }
 opencv-python-headless = "^4.8"
 psutil = "*"
 
