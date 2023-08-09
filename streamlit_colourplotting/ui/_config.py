@@ -341,6 +341,7 @@ class UserConfig:
                 standalone=True,
                 legend=self.USER_SHOW_LEGEND.get(),
                 axes_visible=self.USER_SHOW_AXES.get(),
+                aspect="equal",
                 **plot_settings,
             )
 
