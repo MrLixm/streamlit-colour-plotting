@@ -1,16 +1,16 @@
 import os
-import time
 import traceback
 
 import numpy
 import streamlit
-import cocoon
-import cocoon.color
 
 import streamlit_colourplotting.core
+from streamlit_colourplotting.colorlib import colorspace_to_colorspace
+from streamlit_colourplotting.colorlib import sRGB_COLORSPACE
+from streamlit_colourplotting.colorlib import ChromaticAdaptationTransform
+from streamlit_colourplotting.colorlib import convert_float_to_int8
 from streamlit_colourplotting.ui import config
 from ._colorspacepicker import create_colorspace_picker
-
 
 SUPPORTED_EXTENSION = [
     ".png",
@@ -42,13 +42,13 @@ def create_image_preview(image_array: numpy.ndarray, target_width):
     )
 
     source_colorspace = config().source_colorspace
-    preview_array = cocoon.colorspace_to_colorspace(
+    preview_array = colorspace_to_colorspace(
         preview_array,
         source_colorspace,
-        cocoon.sRGB_COLORSPACE,
-        cocoon.ChromaticAdaptationTransform.get_default(),
+        sRGB_COLORSPACE,
+        ChromaticAdaptationTransform.get_default(),
     )
-    preview_array = cocoon.color.convert_float_to_int8(preview_array)
+    preview_array = convert_float_to_int8(preview_array)
     streamlit.image(preview_array, caption=f"sRGB preview {image_array.shape}")
 
 

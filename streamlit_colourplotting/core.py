@@ -2,7 +2,6 @@ import logging
 import os
 import sys
 from io import BytesIO
-from typing import Optional
 
 import colour.io
 import imageio.v3 as imageio

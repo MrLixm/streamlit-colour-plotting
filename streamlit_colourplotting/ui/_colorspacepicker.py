@@ -1,11 +1,8 @@
-import cocoon
-import numpy
 import streamlit
 
-from cocoon import get_colorspace
-from cocoon import get_available_colorspaces
-from cocoon import sRGB_COLORSPACE
-
+from streamlit_colourplotting.colorlib import get_colorspace
+from streamlit_colourplotting.colorlib import sRGB_COLORSPACE
+from streamlit_colourplotting.colorlib import get_available_colorspaces
 from streamlit_colourplotting.ui import config
 from streamlit_colourplotting import widgetify
 
@@ -20,7 +17,7 @@ def widget_colorspace(key, force_update=False):
     colorspace = get_colorspace(user_value)
     color_format = config().USER_SOURCE_COLOR_FORMAT.get()
 
-    if color_format == color_format.hex and colorspace != sRGB_COLORSPACE:
+    if color_format == color_format.hex and colorspace.name != sRGB_COLORSPACE.name:
         user_issues = config().USER_SOURCE_ERROR.get()
         config().USER_SOURCE_ERROR.set(user_issues | user_issues.hex_colorspace)
         # reset to previously stored
@@ -58,10 +55,7 @@ def create_colorspace_picker():
 
         with column1:
             widget_colorspace(force_update=True)
-            with cocoon.disable_colorspaces(["Passthrough", "Pointer's Gamut"]):
-                options = [
-                    colorspace.name for colorspace in get_available_colorspaces()
-                ]
+            options = get_available_colorspaces()
             streamlit.selectbox(
                 label="Colorspace",
                 options=options,

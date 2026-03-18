@@ -60,11 +60,6 @@ This mean that anything in the global scope will be shared along users. This why
 the "config" system store everything in session_state instead of python global variables.
 
 
-## Cocoon
-
-Note that for color manipulation, this application use [cocoon](https://github.com/MrLixm/cocoon) which
-is mostly a convenient wrapper around colour library.
-
 ## Profiling
 
 As streamlit cloud machine are limited in ressources, it's a good idea to 

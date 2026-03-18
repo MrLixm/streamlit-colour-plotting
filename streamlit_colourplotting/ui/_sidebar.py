@@ -1,7 +1,7 @@
 from typing import Optional
 
 import streamlit
-from cocoon import get_available_colorspaces
+from streamlit_colourplotting.colorlib import get_available_colorspaces
 
 from streamlit_colourplotting.ui._config import SourceType
 from streamlit_colourplotting.ui._config import DiagramMethod
@@ -37,7 +37,7 @@ def create_colorspace_row(
         if identifier == 1:
             streamlit.markdown("Source Colorspace")
         else:
-            options = [colorspace.name for colorspace in get_available_colorspaces()]
+            options = get_available_colorspaces()
             colorspace_name = streamlit.selectbox(
                 label=f"Colorspace {identifier}",
                 options=options,

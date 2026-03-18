@@ -3,17 +3,18 @@ from typing import Generic
 from typing import Optional
 from typing import TypeVar
 
-import cocoon
 import colour
 import matplotlib.style
 import matplotlib.pyplot
 import numpy
 import streamlit
-from cocoon import RgbColorspace
-from cocoon import sRGB_COLORSPACE
-from cocoon.color import RGBAColor
-from cocoon.color import ColorStringFormat
 
+from streamlit_colourplotting.colorlib import ColorStringFormat
+from streamlit_colourplotting.colorlib import RGBAColor
+from streamlit_colourplotting.colorlib import RgbColorspace
+from streamlit_colourplotting.colorlib import sRGB_COLORSPACE
+from streamlit_colourplotting.colorlib import get_colorspace
+from streamlit_colourplotting.colorlib import is_colorspace_decoding_linear
 from streamlit_colourplotting._utils import UifiedEnum
 from streamlit_colourplotting.core import transform_box
 
@@ -177,10 +178,10 @@ class UserConfig:
         )
         self.USER_IMAGE_SAMPLES = UserConfigOption(20, "USER_IMAGE_SAMPLES")
         self.USER_STYLE = UserConfigOption({}, "USER_STYLE")
-        self.USER_FIGURE_COLORSPACES: UserConfigOption[
-            list[tuple[str, str]]
-        ] = UserConfigOption(
-            [(self.SOURCE_COLORSPACE_TOKEN, "#F44336")], "USER_FIGURE_COLORSPACES"
+        self.USER_FIGURE_COLORSPACES: UserConfigOption[list[tuple[str, str]]] = (
+            UserConfigOption(
+                [(self.SOURCE_COLORSPACE_TOKEN, "#F44336")], "USER_FIGURE_COLORSPACES"
+            )
         )
         self.USER_SHOW_LEGEND = UserConfigOption(True, "USER_SHOW_LEGEND")
         self.USER_SHOW_AXES = UserConfigOption(True, "USER_SHOW_AXES")
@@ -192,14 +193,16 @@ class UserConfig:
         self.USER_AXES_OFFSET_Y = UserConfigOption(0.0, "USER_AXES_OFFSET_Y")
 
     @property
-    def source_colorspace(self) -> cocoon.RgbColorspace:
+    def source_colorspace(self) -> RgbColorspace:
         """
         Full colorspace specification describing the source (linearized or not)
         """
         colorspace = self.USER_SOURCE_COLORSPACE.get()
 
         if self.USER_SOURCE_FORCE_LINEAR.get():
-            colorspace = self.USER_SOURCE_COLORSPACE.get().as_linear_copy()
+            colorspace = colorspace.copy()
+            colorspace.cctf_decoding = colour.linear_function
+            colorspace.cctf_encoding = colour.linear_function
 
         return colorspace
 
@@ -207,11 +210,6 @@ class UserConfig:
     def color(self) -> RGBAColor:
         colorspace = self.USER_SOURCE_COLORSPACE.get()
         color = self.USER_SOURCE_COLOR.get().as_colorspace(colorspace)
-
-        if self.USER_SOURCE_FORCE_LINEAR.get():
-            colorspace = colorspace.as_linear_copy()
-            color = color.as_colorspace(colorspace)
-
         return color
 
     def _get_figure_colorspaces(self) -> dict[colour.RGB_Colourspace, str]:
@@ -226,14 +224,13 @@ class UserConfig:
 
         for colorspace_name, color in _figure_colorspaces:
             if colorspace_name == self.SOURCE_COLORSPACE_TOKEN:
-                colorspace = self.source_colorspace.as_colour_colorspace()
+                colorspace = self.source_colorspace
 
             elif colorspace_name is None:
                 continue
 
             else:
-                colorspace = cocoon.get_colorspace(colorspace_name)
-                colorspace = colorspace.as_colour_colorspace()
+                colorspace = get_colorspace(colorspace_name)
 
             figure_colorspaces[colorspace] = color
 
@@ -260,8 +257,8 @@ class UserConfig:
                 image = image[::samples, ::samples, ...]
 
             # NOTE: colour plotting function expect linear encoding
-            if not source_colorspace.transfer_functions.is_decoding_linear:
-                image = source_colorspace.transfer_functions.decoding(image)
+            if not is_colorspace_decoding_linear(source_colorspace):
+                image = source_colorspace.cctf_decoding(image)
 
             return image
 
@@ -274,7 +271,7 @@ class UserConfig:
         """
         image = self.generate_image()
         colorspace = self.source_colorspace
-        colour_colorspace = colorspace.as_colour_colorspace()
+        colour_colorspace = colorspace
         figure_colorspaces = self._get_figure_colorspaces()
         diagram_method = self.USER_DIAGRAM_METHOD.get()
 
