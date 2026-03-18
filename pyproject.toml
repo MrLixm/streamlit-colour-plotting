@@ -1,24 +1,23 @@
-[tool.poetry]
+[project]
 name = "streamlit-colour-plotting"
 version = "2.0.1"
 description = "Web-app to plot colors, images, colorspaces in graphs."
 authors = ["Liam Collod <monsieurlixm@gmail.com>"]
 readme = "README.md"
 packages = [{ include = "streamlit_colourplotting" }]
+requires-python = ">=3.12"
+dependencies = [
+    "colour-science>=0.4.7",
+    "imageio>=2.37.3",
+    "matplotlib>=3.10.8",
+    # required for imageio to read some image formats ?
+    "opencv-python-headless>=4.13.0.92",
+    "psutil>=7.2.2",
+    "streamlit>=1.55.0",
+]
 
-[tool.poetry.dependencies]
-python = ">3.9.7,<3.11"
-streamlit = "^1.25"
-colour-science = { version = "^0.4", extras = ["plotting"] }
-matplotlib = "*"
-cocoon = { git = "https://github.com/MrLixm/cocoon.git", tag = "v0.6.1" }
-opencv-python-headless = "^4.8"
-psutil = "*"
-
-[tool.poetry.dev-dependencies]
-black = "*"
-psrecord = "*"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[dependency-groups]
+dev = [
+    "black>=26.3.1",
+    "psrecord>=1.4",
+]

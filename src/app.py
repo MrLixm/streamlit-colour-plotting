@@ -5,14 +5,13 @@ import os
 os.environ["COLOUR_SCIENCE__DEFAULT_FLOAT_DTYPE"] = "float32"
 # must be executed before cv2 first import
 os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
-# to enable locally but to disable on streamlit cloud
-# os.environ["STCP_DISABLE_SIZE_LIMITATIONS"] = "1"
+# to enable on cloud but to disable locally
+# os.environ["STCP_ENABLE_SIZE_LIMITATIONS"] = "1"
 
 import colour.utilities
 import psutil
 import streamlit
 import streamlit_colourplotting
-
 
 APP_LOG_LEVEL_KEY = "APP_LOG_LEVEL"
 

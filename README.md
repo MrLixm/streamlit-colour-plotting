@@ -8,40 +8,34 @@ the [colour-science](https://www.colour-science.org/) library.
 The application allow to plot a single R-G-B color or a whole image using various
 methods. A lot of options allow you to customize how the final diagram looks.
 
-# Development
+## Usage
 
-## Getting Started
+You can either access the app on the web at or run it locally on your machine.
 
-Assuming you have :
+For running it locally you will need:
 
-- set the current working directory as desired
-- installed [poetry](https://python-poetry.org/) on your system
+- uv installed on your machine: https://docs.astral.sh/uv/getting-started/installation/
+  - you can just download the uv executable somewhere and copy its path. 
+    Instead of calling just `uv` in the following command, you call the path to uv.
 
-```shell
-git clone https://github.com/MrLixm/streamlit-colour-plotting.git
-cd streamlit-colour-plotting
-poetry update
+- this repository downloaded anywhere on your machine
+
+Once this is done, open a terminal and run the following commands:
+
+```bash
+cd /path/to/downloaded/repo
+uv run python -m streamlit run src/app.py --server.headless true
 ```
 
-You should now be able to run the application using the launcher :
-
-```shell
-./dev/run-streamlit.sh
-```
-
-You can now start editing code in [streamlit_colourplotting/](streamlit_colourplotting).
-
-It is recommended to put in place a file watcher or a pre-commit hook that 
-would run [black](https://black.readthedocs.io/en/stable/) on all the files.
+A message with an url should appear, ctrl+click on it your terminal supports it,
+else copy the url in your web-browser.
 
 ## Configuration
 
 ### Environment Variables
 
-To use for local development (not on cloud).
-
-- `STCP_DISABLE_SIZE_LIMITATIONS` : to set with any non-empty value. 
-    Remove the 2048 size limitation for images upload.
+- `STCP_ENABLE_SIZE_LIMITATIONS` : to set with any non-empty value. 
+    Enable a 2048 size limitation for images upload (useful when web-hosted).
 - `STCP_APP_LOG_LEVEL` : set the python application logger level. Except a python log level in upper case. ex: `WARNING`
 
 ## Logic
@@ -59,11 +53,6 @@ A important concept to understand :
 This mean that anything in the global scope will be shared along users. This why
 the "config" system store everything in session_state instead of python global variables.
 
-
-## Cocoon
-
-Note that for color manipulation, this application use [cocoon](https://github.com/MrLixm/cocoon) which
-is mostly a convenient wrapper around colour library.
 
 ## Profiling
 

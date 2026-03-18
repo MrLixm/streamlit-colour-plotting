@@ -1,13 +1,13 @@
 import numpy
 import streamlit
 
-from cocoon import sRGB_COLORSPACE
-from cocoon.color import convert_float_to_int8
-from cocoon.color import ColorStringFormat
-from cocoon.color import convert_color_to_str
-from cocoon.color import convert_str_to_color
-from cocoon.color import validate_color_str
-from cocoon.color import fix_color_str
+from streamlit_colourplotting.colorlib import sRGB_COLORSPACE
+from streamlit_colourplotting.colorlib import convert_float_to_int8
+from streamlit_colourplotting.colorlib import ColorStringFormat
+from streamlit_colourplotting.colorlib import convert_color_to_str
+from streamlit_colourplotting.colorlib import convert_str_to_color
+from streamlit_colourplotting.colorlib import validate_color_str
+from streamlit_colourplotting.colorlib import fix_color_str
 
 from streamlit_colourplotting.ui import config
 from streamlit_colourplotting import widgetify
