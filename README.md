@@ -10,13 +10,13 @@ methods. A lot of options allow you to customize how the final diagram looks.
 
 ## Usage
 
-You can either access the app on the web at or run it locally on your machine.
+You can either access the app on the web at https://colour-plotting.streamlit.app/ or run it locally on your machine.
 
 For running it locally you will need:
 
 - uv installed on your machine: https://docs.astral.sh/uv/getting-started/installation/
-  - you can just download the uv executable somewhere and copy its path. 
-    Instead of calling just `uv` in the following command, you call the path to uv.
+  - optionally you can also just download the uv executable somewhere and copy its path. 
+    And instead of calling just `uv` in the next commands, you call the path to uv.
 
 - this repository downloaded anywhere on your machine
 
