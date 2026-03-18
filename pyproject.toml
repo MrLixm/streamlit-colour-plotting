@@ -4,7 +4,7 @@ version = "3.0.0"
 description = "Web-app to plot colors, images, colorspaces in graphs."
 authors = ["Liam Collod <monsieurlixm@gmail.com>"]
 readme = "README.md"
-packages = [{ include = "streamlit_colourplotting" }]
+packages = [{ include = "src/streamlit_colourplotting" }]
 requires-python = ">=3.12"
 dependencies = [
     "colour-science>=0.4.7",
