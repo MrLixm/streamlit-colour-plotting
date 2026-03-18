@@ -208,7 +208,7 @@ class UserConfig:
 
     @property
     def color(self) -> RGBAColor:
-        colorspace = self.USER_SOURCE_COLORSPACE.get()
+        colorspace = self.source_colorspace
         color = self.USER_SOURCE_COLOR.get().as_colorspace(colorspace)
         return color
 
@@ -243,6 +243,9 @@ class UserConfig:
         if self.USER_SOURCE_TYPE.get() == SourceType.color:
             # NOTE: bug with 1976 method, doesn't accept 1x1 array
             image = numpy.full([2, 2, 3], self.color.to_array(alpha=False))
+            if not is_colorspace_decoding_linear(self.color.colorspace):
+                image = self.color.colorspace.cctf_decoding(image)
+
             return image
 
         elif self.USER_SOURCE_TYPE.get() == SourceType.image:
