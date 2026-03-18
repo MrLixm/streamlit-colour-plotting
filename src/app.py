@@ -1,5 +1,7 @@
 import logging
 import os
+import sys
+from pathlib import Path
 
 # before colour first import
 os.environ["COLOUR_SCIENCE__DEFAULT_FLOAT_DTYPE"] = "float32"
@@ -7,6 +9,10 @@ os.environ["COLOUR_SCIENCE__DEFAULT_FLOAT_DTYPE"] = "float32"
 os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
 # to enable on cloud but to disable locally
 # os.environ["STCP_ENABLE_SIZE_LIMITATIONS"] = "1"
+
+THIS_DIR = Path(__file__).parent
+if THIS_DIR not in sys.path:
+    sys.path.append(str(THIS_DIR))
 
 import colour.utilities
 import psutil
