@@ -69,7 +69,7 @@ def create_image_picker():
         try:
             image_array = _get_image_from_bytes(user_image)
 
-            if not os.getenv("STCP_DISABLE_SIZE_LIMITATIONS") and (
+            if os.getenv("STCP_ENABLE_SIZE_LIMITATIONS") and (
                 image_array.shape[0] > 2048 or image_array.shape[1] > 2048
             ):
                 raise ValueError(
