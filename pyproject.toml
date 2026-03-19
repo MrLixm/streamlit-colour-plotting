@@ -1,6 +1,6 @@
 [project]
 name = "streamlit-colour-plotting"
-version = "3.0.0"
+version = "3.1.0"
 description = "Web-app to plot colors, images, colorspaces in graphs."
 authors = ["Liam Collod <monsieurlixm@gmail.com>"]
 readme = "README.md"

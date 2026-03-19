@@ -1165,7 +1165,7 @@ wheels = [
 
 [[package]]
 name = "streamlit-colour-plotting"
-version = "2.0.1"
+version = "3.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "colour-science" },
